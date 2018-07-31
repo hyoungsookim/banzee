@@ -5,6 +5,7 @@
                     'CP' - Coupon Code
                     'WT' - Wire Transfer
                     'CK' - Check
+                    'IAP' - In-App Purchase
 */
 create table bat_md_payment_methods 
 (
