@@ -1,7 +1,7 @@
 /*
     User Accounts
 */
-create table bat_uw_user_accounts
+create table mtt_uw_user_accounts
 (
     user_id				varchar(50)		not null,
     partner_id 			varchar(50)		not null,
@@ -13,6 +13,6 @@ create table bat_uw_user_accounts
     created_at 		    datetime		not null,
     updated_at		    datetime		not null,
 
-    constraint pk_bat_uw_user_accounts
+    constraint pk_mtt_uw_user_accounts
         primary key (user_id)
 );
