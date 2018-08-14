@@ -4,7 +4,7 @@
 create table mtt_md_payment_method_response_types
 (
     method_code         varchar(10)         not null,
-    payment_response    smallint            not null,
+    payment_response    varchar(20)         not null,
     payment_status      smallint            not null,
     created_at          datetime            not null,
     updated_at          datetime            not null,
