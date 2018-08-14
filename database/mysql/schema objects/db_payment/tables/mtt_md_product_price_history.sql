@@ -10,5 +10,5 @@ create table mtt_md_product_price_history
     unit_price          decimal(12, 2)      not null,
 
     constraint pk_mtt_md_product_price_history
-        primary key ()
+        primary key (change_no)
 );
