@@ -20,6 +20,7 @@ values
 	(408, 'expired',            current_timestamp(), current_timestamp(), 'This authorization has expired and cannot be captured.'),
 	(409, 'duplicated',         current_timestamp(), current_timestamp(), 'Transaction duplicated.'),
 	(412, 'failed',             current_timestamp(), current_timestamp(), 'Transaction failed.'),
+	(422, 'invalid_configuration', current_timestamp(), current_timestamp(), 'Invalid configuration.'),
 	(451, 'denied',             current_timestamp(), current_timestamp(), 'The payment denied.'),
 	(500, 'server_error',       current_timestamp(), current_timestamp(), 'Internal server error.'),
 	(503, 'unavailable',        current_timestamp(), current_timestamp(), 'Service unavailable.'),
