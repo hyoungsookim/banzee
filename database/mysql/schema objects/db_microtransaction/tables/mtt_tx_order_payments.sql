@@ -3,6 +3,7 @@
 */
 create table mtt_tx_order_payments
 (
+	payment_no				int				not null auto_increment,
 	order_no 				int 			not null,
 	method_code 			varchar(10) 	not null,
 	payment_status 			smallint		not null,
@@ -18,5 +19,5 @@ create table mtt_tx_order_payments
 	cvv_result 				varchar(50)		null,
 
     constraint pk_mtt_tx_order_payments
-		primary key (order_no, method_code)
+		primary key (payment_no)
 );
