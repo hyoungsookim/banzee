@@ -1,21 +1,23 @@
 """
 """
 
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, SmallInteger, DateTime
 
 Base = declarative_base()
+metadata = Base.metadata
 
 
 class User(Base):
     __tablename__ = 'mtt_uw_users'
 
-    user_no         = Column(Integer, primary_key=True)
+    user_no         = Column(INTEGER, primary_key=True)
     user_id         = Column(String(50), nullable=False, unique=True)
     partner_id      = Column(String(50), nullable=False)
-    user_status     = Column(SmallInteger, nullable=False)
-    user_type       = Column(SmallInteger, nullable=False)
-    user_level      = Column(SmallInteger, nullable=False)
+    user_status     = Column(SMALLINT, nullable=False)
+    user_type       = Column(SMALLINT, nullable=False)
+    user_level      = Column(SMALLINT, nullable=False)
     first_name      = Column(String(50), nullable=False)
     last_name       = Column(String(50), nullable=False)
     created_at      = Column(DateTime, nullable=False)

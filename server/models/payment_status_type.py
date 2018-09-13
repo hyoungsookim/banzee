@@ -1,16 +1,18 @@
 """
 """
 
+from sqlalchemy import Column, String, DateTime
+from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, SmallInteger, DateTime
 
 Base = declarative_base()
+metadata = Base.metadata
 
 
 class PaymentStatusType(Base):
     __tablename__ = 'mtt_md_payment_status_types'
 
-    payment_status              = Column(SmallInteger, primary_key=True)
+    payment_status              = Column(SMALLINT, primary_key=True)
     payment_status_name         = Column(String(50), nullable=False)
     created_at                  = Column(DateTime, nullable=False)
     updated_at                  = Column(DateTime, nullable=False)
