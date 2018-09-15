@@ -12,7 +12,7 @@ metadata = Base.metadata
 class Order(Base):
     __tablename__ = "mtt_tx_orders"
 
-    order_no        = Column(INTEGER, primary_key=True)
+    order_no        = Column(INTEGER, primary_key=True, autoincrement=True)
     order_id        = Column(String(50), nullable=False, unique=True)
     user_no         = Column(INTEGER, nullable=False, Index=True)
     order_status    = Column(SMALLINT, nullable=False)

@@ -12,7 +12,7 @@ metadata = Base.metadata
 class Transaction(Base):
     __tablename__ = 'mtt_tx_transactions'
 
-    trx_no      = Column(INTEGER(11), primary_key=True)
+    trx_no      = Column(INTEGER(11), primary_key=True, autoincrement=True)
     account_no  = Column(INTEGER(11), nullable=False, index=True)
     trx_type    = Column(SMALLINT(6), nullable=False)
     trx_status  = Column(SMALLINT(6), nullable=False)

@@ -15,7 +15,7 @@ class UserAccount(Base):
         Index('mtd_uw_user_accounts_user_no', 'user_no', 'account_type', unique=True),
     )
 
-    account_no      = Column(INTEGER, primary_key=True)
+    account_no      = Column(INTEGER, primary_key=True, autoincrement=True)
     user_no         = Column(INTEGER, nullable=False)
     account_type    = Column(SMALLINT, nullable=False)
     balance_amount  = Column(INTEGER, nullable=False)

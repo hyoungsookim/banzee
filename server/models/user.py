@@ -12,7 +12,7 @@ metadata = Base.metadata
 class User(Base):
     __tablename__ = 'mtt_uw_users'
 
-    user_no         = Column(INTEGER, primary_key=True)
+    user_no         = Column(INTEGER, primary_key=True, autoincrement=True)
     user_id         = Column(String(50), nullable=False, unique=True)
     partner_id      = Column(String(50), nullable=False)
     user_status     = Column(SMALLINT, nullable=False)

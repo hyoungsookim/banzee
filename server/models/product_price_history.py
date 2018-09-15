@@ -12,7 +12,7 @@ metadata = Base.metadata
 class ProductPriceHistory(Base):
     __tablename__ = 'mtt_md_product_price_history'
 
-    change_no       = Column(INTEGER, primary_key=True)
+    change_no       = Column(INTEGER, primary_key=True, autoincrement=True)
     product_no      = Column(INTEGER, nullable=False)
     account_type    = Column(SMALLINT, nullable=False)
     updated_at      = Column(DateTime, nullable=False)

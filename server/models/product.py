@@ -12,7 +12,7 @@ metadata = Base.metadata
 class Product(Base):
     __tablename__ = 'mtt_md_products'
 
-    product_no          = Column(INTEGER, primary_key=True)
+    product_no          = Column(INTEGER, primary_key=True, autoincrement=True)
     product_id          = Column(String(50), nullable=False, unique=True)
     product_status      = Column(SMALLINT, nullable=False)
     product_name        = Column(String(50), nullable=False)

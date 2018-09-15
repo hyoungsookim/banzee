@@ -12,7 +12,7 @@ metadata = Base.metadata
 class OrderPaymentLog(Base):
     __tablename__ = "mtt_tx_order_payment_logs"
 
-    log_no          = Column(INTEGER, primary_key=True)
+    log_no          = Column(INTEGER, primary_key=True, autoincrement=True)
     payment_no      = Column(INTEGER, nullable=False, Index=True)
     payment_status  = Column(SMALLINT, nullable=False)
     created_at      = Column(DateTime, nullable=False)
