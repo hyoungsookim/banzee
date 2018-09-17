@@ -7,18 +7,20 @@ from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-metadata = Base.metadata
+from server.app import db
+
+#Base = declarative_base()
+#metadata = Base.metadata
 
 
-class Partner(Base):
+class Partner(db.Model):
     __tablename__ = 'mtt_md_partners'
 
-    partner_id      = Column(String(50), primary_key=True)
-    partner_status  = Column(SMALLINT, nullable=False)
-    partner_name    = Column(String(50), nullable=False)
-    created_at      = Column(DateTime, nullable=False)
-    updated_at      = Column(DateTime, nullable=False)
+    partner_id      = db.Column(String(50), primary_key=True)
+    partner_status  = db.Column(SMALLINT, nullable=False)
+    partner_name    = db.Column(String(50), nullable=False)
+    created_at      = db.Column(DateTime, nullable=False)
+    updated_at      = db.Column(DateTime, nullable=False)
 
     def __init__(self, partner_id, partner_name, partner_status=200):
         self.partner_id = partner_id
