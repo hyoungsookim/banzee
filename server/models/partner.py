@@ -1,12 +1,11 @@
 """
 """
 
-from datetime import datetime
-
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
-from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.ext.declarative import declarative_base
 
+from server.utils import *
 from server.app import db
 
 #Base = declarative_base()
@@ -26,8 +25,8 @@ class Partner(db.Model):
         self.partner_id = partner_id
         self.partner_status = partner_status
         self.partner_name = partner_name
-        self.created_at = datetime.now
-        self.updated_at = datetime.now
+        self.created_at = get_current_datetime_str()
+        self.updated_at = get_current_datetime_str()
 
     def __repr__(self):
         return self.partner_name
