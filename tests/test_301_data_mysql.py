@@ -5,9 +5,11 @@ import pytest
 from server.models.partner import Partner
 from server.models.payment_method import PaymentMethod
 from server.models.transaction_type import TransactionType
+from server.models.user import User
 from server.data.partner_data import PartnerData
 from server.data.payment_method_data import PaymentMethodData
 from server.data.transaction_type_data import TransactionTypeData
+from server.data.user_data import UserData
 
 
 class TestPartnerData(object):
@@ -74,6 +76,38 @@ class TestTransactionType(object):
     def test_update_200_success(self):
         self.info.trx_type_name = "TYPE_TEST"
         self.info.trx_type_description = "UNIT_TEST"
+        assert self.data.update(self.info) == True
+
+    def test_delete_200_success(self):
+        assert self.data.delete(self.info) == True
+
+
+class TestUser(object):
+    info = User(user_id="USER_ID_TEST", 
+                partner_id="VINCLE",
+                user_status=200,
+                user_type=1,
+                user_level=100,
+                first_name="TEST_FIRST_NAME",
+                last_name="TEST_LAST_NAME")
+
+    data = UserData()
+
+    def test_get_list(self):
+        assert self.data.get_list() is not None
+
+    def test_get(self):
+        assert self.data.get("TEST_USER_ID") is not None
+
+    def test_create_200_success(self):
+        assert self.data.create(self.info) == True
+
+    def test_update_200_success(self):
+        self.info.user_status = 0
+        self.info.user_type = 2
+        self.info.user_level = 101
+        self.info.first_name = "FIRST_NAME_TEST"
+        self.info.last_name = "LAST_NAME_TEST"
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
