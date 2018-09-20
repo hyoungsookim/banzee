@@ -3,21 +3,24 @@
 
 from sqlalchemy import Column, String, DECIMAL, DateTime, Text, Index
 from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
-from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-metadata = Base.metadata
+from server.utils import *
+from server.app import db
+
+#Base = declarative_base()
+#metadata = Base.metadata
 
 
-class OrderPaymentLog(Base):
+class OrderPaymentLog(db.Model):
     __tablename__ = "mtt_tx_order_payment_logs"
 
-    log_no          = Column(INTEGER, primary_key=True, autoincrement=True)
-    payment_no      = Column(INTEGER, nullable=False, Index=True)
-    payment_status  = Column(SMALLINT, nullable=False)
-    created_at      = Column(DateTime, nullable=False)
-    remote_ip       = Column(String(50), nullable=True)
-    log_text        = Column(Text, nullable=True)
+    log_no          = db.Column(INTEGER, primary_key=True, autoincrement=True)
+    payment_no      = db.Column(INTEGER, nullable=False, Index=True)
+    payment_status  = db.Column(SMALLINT, nullable=False)
+    created_at      = db.Column(DateTime, nullable=False)
+    remote_ip       = db.Column(String(50), nullable=True)
+    log_text        = db.Column(Text, nullable=True)
 
     def __init__(self, order_no, method_code, 
                 payment_status, remote_ip=None, log_text=None):
@@ -26,3 +29,4 @@ class OrderPaymentLog(Base):
         self.payment_status = payment_status
         self.remote_ip = remote_ip
         self.log_text = log_text
+        self.created_at = get_current_datetime_str()

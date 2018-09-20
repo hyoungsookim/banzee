@@ -2,12 +2,16 @@ import pytest
 # import uuid
 # import decimal
 
+from server.models.orders import Order
 from server.models.partner import Partner
 from server.models.payment_method import PaymentMethod
+from server.models.product import Product
 from server.models.transaction_type import TransactionType
 from server.models.user import User
+from server.data.order_data import OrderData
 from server.data.partner_data import PartnerData
 from server.data.payment_method_data import PaymentMethodData
+from server.data.product_data import ProductData
 from server.data.transaction_type_data import TransactionTypeData
 from server.data.user_data import UserData
 
@@ -108,6 +112,69 @@ class TestUser(object):
         self.info.user_level = 101
         self.info.first_name = "FIRST_NAME_TEST"
         self.info.last_name = "LAST_NAME_TEST"
+        assert self.data.update(self.info) == True
+
+    def test_delete_200_success(self):
+        assert self.data.delete(self.info) == True
+
+
+class TestProduct(object):
+    info = Product(product_id="PRODUCT_ID_TEST", 
+                   product_status=200,
+                   product_name="PRODUCT_NAME_TEST",
+                   product_type="SERVICE",
+                   product_description=None)
+
+    data = ProductData()
+
+    def test_create_200_success(self):
+        assert self.data.create(self.info) == True
+
+    def test_get_list(self):
+        assert self.data.get_list() is not None
+
+    def test_get(self):
+        assert self.data.get("PRODUcT_ID_TEST") is not None
+
+    def test_update_200_success(self):
+        self.info.product_status = 0
+        self.info.product_name = "TEST_PRODUCT_NAME"
+        self.info.product_type = "ITEM"
+        self.info.product_description = "PRODUCT_DESCRIPTION"
+        assert self.data.update(self.info) == True
+
+    def test_delete_200_success(self):
+        assert self.data.delete(self.info) == True
+
+
+class TestOrder(object):
+    info = Order(order_id="ORDER_ID_TEST",
+                 user_no=2, 
+                 order_status=200,
+                 order_amount=123,
+                 tax_amount=10,
+                 total_amount=133,
+                 platform_type=None,
+                 app_type=None)
+
+    data = OrderData()
+
+    def test_create_200_success(self):
+        assert self.data.create(self.info) == True
+
+    def test_get_list(self):
+        assert self.data.get_list() is not None
+
+    def test_get(self):
+        assert self.data.get("ORDER_ID_TEST") is not None
+
+    def test_update_200_success(self):
+        self.info.order_status = 0
+        self.info.order_amount = 100
+        self.info.tax_amount = 8.5
+        self.info.total_amount = 108.5
+        self.info.platform_type = "APPLE"
+        self.info.app_type = "IPHONE"
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
