@@ -26,6 +26,9 @@ class UserData(base.Data):
 
 
     def create(self, user):
+        if not isinstance(user, User):
+            raise TypeError("Should be an instance of User class")
+
         try:
             db.session.add(user)
             db.session.commit()
@@ -36,6 +39,9 @@ class UserData(base.Data):
 
 
     def update(self, user):
+        if not isinstance(user, User):
+            raise TypeError("Should be an instance of User class")
+
         try:
             db.session.query(User).filter_by(user_id=user.user_id).\
                 update({
@@ -55,6 +61,9 @@ class UserData(base.Data):
 
 
     def delete(self, user):
+        if not isinstance(user, User):
+            raise TypeError("Should be an instance of User class")
+
         try:
             db.session.delete(user)
             db.session.commit()

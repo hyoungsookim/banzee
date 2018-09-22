@@ -29,6 +29,9 @@ class OrderData(base.Data):
 
 
     def create(self, order):
+        if not isinstance(order, Order):
+            raise TypeError("Should be an instance of Order class")
+
         try:
             db.session.add(order)
             db.session.commit()
@@ -39,6 +42,9 @@ class OrderData(base.Data):
 
 
     def update(self, order):
+        if not isinstance(order, Order):
+            raise TypeError("Should be an instance of Order class")
+
         try:
             db.session.query(Order).filter_by(order_id=order.order_id).\
                 update({
@@ -59,6 +65,9 @@ class OrderData(base.Data):
 
 
     def delete(self, order):
+        if not isinstance(order, Order):
+            raise TypeError("Should be an instance of Order class")
+
         try:
             db.session.delete(order)
             db.session.commit()

@@ -27,6 +27,9 @@ class TransactionTypeData(base.Data):
 
 
     def create(self, transactionType):
+        if not isinstance(transactionType, TransactionType):
+            raise TypeError("Should be an instance of TransactionType class")
+
         try:
             db.session.add(transactionType)
             db.session.commit()
@@ -37,6 +40,9 @@ class TransactionTypeData(base.Data):
 
 
     def update(self, transactionType):
+        if not isinstance(transactionType, TransactionType):
+            raise TypeError("Should be an instance of TransactionType class")
+
         try:
             db.session.query(TransactionType).filter_by(trx_type=transactionType.trx_type).\
                 update({
@@ -53,6 +59,9 @@ class TransactionTypeData(base.Data):
 
 
     def delete(self, transactionType):
+        if not isinstance(transactionType, TransactionType):
+            raise TypeError("Should be an instance of TransactionType class")
+
         try:
             db.session.delete(transactionType)
             db.session.commit()

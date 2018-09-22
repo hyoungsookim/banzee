@@ -29,6 +29,9 @@ class ProductData(base.Data):
 
 
     def create(self, product):
+        if not isinstance(product, Product):
+            raise TypeError("Should be an instance of Product class")
+
         try:
             db.session.add(product)
             db.session.commit()
@@ -39,6 +42,9 @@ class ProductData(base.Data):
 
 
     def update(self, product):
+        if not isinstance(product, Product):
+            raise TypeError("Should be an instance of Product class")
+        
         try:
             db.session.query(Product).filter_by(product_id=product.product_id).\
                 update({
@@ -57,6 +63,9 @@ class ProductData(base.Data):
 
 
     def delete(self, product):
+        if not isinstance(product, Product):
+            raise TypeError("Should be an instance of Product class")
+
         try:
             db.session.delete(product)
             db.session.commit()

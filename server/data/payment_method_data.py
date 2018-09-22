@@ -28,6 +28,9 @@ class PaymentMethodData(base.Data):
 
 
     def create(self, paymentMethod):
+        if not isinstance(paymentMethod, PaymentMethod):
+            raise TypeError("Should be an instance of PaymentMethod class")
+
         try:
             db.session.add(paymentMethod)
             db.session.commit()
@@ -38,6 +41,9 @@ class PaymentMethodData(base.Data):
 
 
     def update(self, paymentMethod):
+        if not isinstance(paymentMethod, PaymentMethod):
+            raise TypeError("Should be an instance of PaymentMethod class")
+
         try:
             db.session.query(PaymentMethod).filter_by(method_code=paymentMethod.method_code).\
                 update({
@@ -55,6 +61,9 @@ class PaymentMethodData(base.Data):
 
 
     def delete(self, paymentMethod):
+        if not isinstance(paymentMethod, PaymentMethod):
+            raise TypeError("Should be an instance of PaymentMethod class")
+
         try:
             db.session.delete(paymentMethod)
             db.session.commit()

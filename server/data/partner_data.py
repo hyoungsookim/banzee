@@ -29,6 +29,9 @@ class PartnerData(base.Data):
 
 
     def create(self, partner):
+        if not isinstance(partner, Partner):
+            raise TypeError("Should be an instance of Partner class")
+
         try:
             db.session.add(partner)
             db.session.commit()
@@ -39,6 +42,9 @@ class PartnerData(base.Data):
 
 
     def update(self, partner):
+        if not isinstance(partner, Partner):
+            raise TypeError("Should be an instance of Partner class")
+
         try:
             db.session.query(Partner).filter_by(partner_id=partner.partner_id).\
                 update({
@@ -55,6 +61,9 @@ class PartnerData(base.Data):
 
 
     def delete(self, partner):
+        if not isinstance(partner, Partner):
+            raise TypeError("Should be an instance of Partner class")
+
         try:
             db.session.delete(partner)
             db.session.commit()
