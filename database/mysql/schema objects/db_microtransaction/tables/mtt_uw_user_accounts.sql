@@ -1,5 +1,7 @@
 /*
     User Accounts
+
+    account_type: 1 - reward
 */
 create table mtt_uw_user_accounts
 (
