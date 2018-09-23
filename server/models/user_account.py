@@ -21,11 +21,13 @@ class UserAccount(db.Model):
     account_no      = db.Column(INTEGER, primary_key=True, autoincrement=True)
     user_no         = db.Column(INTEGER, nullable=False)
     account_type    = db.Column(SMALLINT, nullable=False)
+    account_status  = db.Column(SMALLINT, nullable=False)
     balance_amount  = db.Column(INTEGER, nullable=False)
     updated_at      = db.Column(DateTime, nullable=False)
 
     def __init__(self, user_no, account_type, balance_amount=0):
         self.user_no = user_no
         self.account_type = account_type
+        self.account_status = 200
         self.balance_amount = balance_amount
         self.updated_at = get_current_datetime_str()

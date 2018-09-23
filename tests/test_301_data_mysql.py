@@ -36,7 +36,7 @@ class TestPartnerData(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('XXX') == True
 
 
 class TestPaymentMethod(object):
@@ -60,7 +60,7 @@ class TestPaymentMethod(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('XXX') == True
 
 
 class TestTransactionType(object):
@@ -83,7 +83,7 @@ class TestTransactionType(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('TYPE_TEST') == True
 
 
 class TestUser(object):
@@ -115,7 +115,7 @@ class TestUser(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('USER_ID_TEST') == True
 
 
 class TestProduct(object):
@@ -144,7 +144,7 @@ class TestProduct(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('PRODUCT_ID_TEST') == True
 
 
 class TestOrder(object):
@@ -178,4 +178,4 @@ class TestOrder(object):
         assert self.data.update(self.info) == True
 
     def test_delete_200_success(self):
-        assert self.data.delete(self.info) == True
+        assert self.data.delete('ORDER_ID_TEST') == True

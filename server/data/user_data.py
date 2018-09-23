@@ -16,12 +16,15 @@ class UserData(base.Data):
         pass
 
     def get_list(self):
-        rows = User.query.all()
+        #rows = User.query.all()
+        rows = db.session.query(User).all()
         return rows
 
 
     def get(self, user_id):
-        row = User.query.filter_by(user_id=user_id)
+        #row = User.query.filter_by(user_id=user_id)
+        row = db.session.query(User).\
+                filter(User.user_id == user_id).one_or_none()
         return row
 
 
@@ -43,15 +46,16 @@ class UserData(base.Data):
             raise TypeError("Should be an instance of User class")
 
         try:
-            db.session.query(User).filter_by(user_id=user.user_id).\
+            db.session.query(User).\
+                filter(User.user_id == user.user_id).\
                 update({
-                            "user_status": user.user_status,
-                            "user_type": user.user_type,
-                            "user_level": user.user_level,
-                            "first_name": user.first_name,
-                            "last_name": user.last_name,
-                            "updated_at": get_current_datetime_str()
-                        })
+                    "user_status": user.user_status,
+                    "user_type": user.user_type,
+                    "user_level": user.user_level,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "updated_at": get_current_datetime_str()
+                })
             db.session.commit()
         except:
             db.session.rollback()
@@ -60,12 +64,11 @@ class UserData(base.Data):
         return True
 
 
-    def delete(self, user):
-        if not isinstance(user, User):
-            raise TypeError("Should be an instance of User class")
-
+    def delete(self, user_id):
         try:
-            db.session.delete(user)
+            db.session.query(User).\
+                filter(User.user_id == user_id).\
+                delete()
             db.session.commit()
         except:
             db.session.rollback()

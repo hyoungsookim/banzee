@@ -19,12 +19,15 @@ class ProductData(base.Data):
 
 
     def get_list(self):
-        rows = Product.query.all()
+        #rows = Product.query.all()
+        rows = db.session.query(Product).all()
         return rows
 
 
     def get(self, product_id):
-        row = Product.query.filter_by(product_id=product_id)
+        #row = Product.query.filter_by(product_id=product_id)
+        row = db.session.query(Product).\
+                filter(Product.product_id == product_id).one_or_none()
         return row
 
 
@@ -46,14 +49,15 @@ class ProductData(base.Data):
             raise TypeError("Should be an instance of Product class")
         
         try:
-            db.session.query(Product).filter_by(product_id=product.product_id).\
+            db.session.query(Product).\
+                filter(Product.product_id == product.product_id).\
                 update({
-                            "product_status": product.product_status,
-                            "product_name": product.product_name,
-                            "product_type": product.product_type,
-                            "updated_at": get_current_datetime_str(),
-                            "product_description": product.product_description
-                        })
+                    "product_status": product.product_status,
+                    "product_name": product.product_name,
+                    "product_type": product.product_type,
+                    "updated_at": get_current_datetime_str(),
+                    "product_description": product.product_description
+                })
             db.session.commit()
         except:
             db.session.rollback()
@@ -62,12 +66,11 @@ class ProductData(base.Data):
         return True
 
 
-    def delete(self, product):
-        if not isinstance(product, Product):
-            raise TypeError("Should be an instance of Product class")
-
+    def delete(self, product_id):
         try:
-            db.session.delete(product)
+            db.session.query(Product).\
+                filter(Product.product_id == product_id).\
+                delete()
             db.session.commit()
         except:
             db.session.rollback()

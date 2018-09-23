@@ -12,19 +12,22 @@ from server.app import db
 
 class OrderData(base.Data):
     """
-    Product data class for accssing database
+    Order data class for accssing database
     """
     def __init__(self):
         pass
 
 
     def get_list(self):
-        rows = Order.query.all()
+        #rows = Order.query.all()
+        rows = db.session.query(Order).all()
         return rows
 
 
     def get(self, order_id):
-        row = Order.query.filter_by(order_id=order_id)
+        #row = Order.query.filter_by(order_id=order_id)
+        row = db.session.query(Order).\
+                filter(Order.order_id == order_id).one_or_none()
         return row
 
 
@@ -46,16 +49,17 @@ class OrderData(base.Data):
             raise TypeError("Should be an instance of Order class")
 
         try:
-            db.session.query(Order).filter_by(order_id=order.order_id).\
+            db.session.query(Order).\
+                filter(Order.order_id == order.order_id).\
                 update({
-                            "order_status": order.order_status,
-                            "updated_at": get_current_datetime_str(),
-                            "order_amount": order.order_amount,
-                            "tax_amount": order.tax_amount,
-                            "total_amount": order.total_amount,
-                            "platform_type": order.platform_type,
-                            "app_type": order.app_type
-                        })
+                    "order_status": order.order_status,
+                    "updated_at": get_current_datetime_str(),
+                    "order_amount": order.order_amount,
+                    "tax_amount": order.tax_amount,
+                    "total_amount": order.total_amount,
+                    "platform_type": order.platform_type,
+                    "app_type": order.app_type
+                })
             db.session.commit()
         except:
             db.session.rollback()
@@ -64,12 +68,11 @@ class OrderData(base.Data):
         return True
 
 
-    def delete(self, order):
-        if not isinstance(order, Order):
-            raise TypeError("Should be an instance of Order class")
-
+    def delete(self, order_id):
         try:
-            db.session.delete(order)
+            db.session.query(Order).\
+                filter(Order.order_id == order_id).\
+                delete()
             db.session.commit()
         except:
             db.session.rollback()

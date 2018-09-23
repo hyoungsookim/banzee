@@ -18,12 +18,15 @@ class PaymentMethodData(base.Data):
 
 
     def get_list(self):
-        rows = PaymentMethod.query.all()
+        #rows = PaymentMethod.query.all()
+        rows = db.session.query(PaymentMethod).all()
         return rows
 
 
     def get(self, method_code):
-        row = PaymentMethod.query.filter_by(method_code=method_code)
+        #row = PaymentMethod.query.filter_by(method_code=method_code)
+        row = db.session.query(PaymentMethod).\
+                filter(PaymentMethod.method_code == method_code).one_or_none()
         return row
 
 
@@ -45,13 +48,14 @@ class PaymentMethodData(base.Data):
             raise TypeError("Should be an instance of PaymentMethod class")
 
         try:
-            db.session.query(PaymentMethod).filter_by(method_code=paymentMethod.method_code).\
+            db.session.query(PaymentMethod).\
+                filter(PaymentMethod.method_code == paymentMethod.method_code).\
                 update({
-                            "method_status": paymentMethod.method_status,
-                            "method_name": paymentMethod.method_name,
-                            "method_type": paymentMethod.method_type,
-                            "updated_at": get_current_datetime_str()
-                        })
+                    "method_status": paymentMethod.method_status,
+                    "method_name": paymentMethod.method_name,
+                    "method_type": paymentMethod.method_type,
+                    "updated_at": get_current_datetime_str()
+                })
             db.session.commit()
         except:
             db.session.rollback()
@@ -60,12 +64,12 @@ class PaymentMethodData(base.Data):
         return True
 
 
-    def delete(self, paymentMethod):
-        if not isinstance(paymentMethod, PaymentMethod):
-            raise TypeError("Should be an instance of PaymentMethod class")
-
+    def delete(self, method_code):
         try:
-            db.session.delete(paymentMethod)
+            #db.session.delete(paymentMethod)
+            db.session.query(PaymentMethod).\
+                filter(PaymentMethod.method_code == method_code).\
+                delete()
             db.session.commit()
         except:
             db.session.rollback()
