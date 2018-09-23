@@ -28,9 +28,6 @@ class Partner(db.Model):
         self.created_at = get_current_datetime_str()
         self.updated_at = get_current_datetime_str()
 
-    def __repr__(self):
-        return self.partner_name
-
     def to_dict(self):
         pass
         #return (col.name: getattr(self, col.name) for col in self.__table__.columns)
