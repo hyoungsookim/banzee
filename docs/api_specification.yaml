@@ -1,0 +1,1110 @@
+openapi: 3.0.0
+servers:
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/hskim/Microtransaction-API/1.0.0
+
+info:
+  description: This is a simple API
+  version: "1.0.0"
+  title: Microtransaction API
+  contact:
+    email: hskim7@yahoo.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+tags:
+  - name: System
+    description: Operations available to system
+  - name: Orders
+    description: Operations available to orders
+  - name: Partners
+    description: Operations available to partners
+  - name: Payment Methods
+    description: Operations available to payment methods
+  - name: Products
+    description: Operations available to products
+  - name: Transactions
+    description: Operations available to transactions
+  - name: Transaction Types
+    description: Operations available to transaction types
+  - name: Users
+    description: Operations available to users
+
+paths:
+  /system:
+    get:
+      tags:
+        - System
+      summary: Health check of system
+      operationId: checkSystem
+      description: Check system health
+      responses:
+        '200':
+          description: System is running correctly.
+
+  /partners:
+    get:
+      tags:
+        - Partners
+      summary: Get a list of partners
+      operationId: getListOfPartners
+      description: By passing in the appropriate options, you can search for
+        available partner in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up partner
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner_List_Response'
+        '400':
+          description: bad input parameter
+
+    post:
+      tags:
+        - Partners
+      summary: Adds a partner
+      operationId: addPartner
+      description: Adds an item to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                partner_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                partner_name:
+                  type: string
+                  example: Vincle
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner_Response'
+              
+  /partners/{partner_id}:
+    get:
+      tags:
+      - Partners
+      summary: Get a partner
+      description: Returns a partner
+      operationId: getPartnerById
+      parameters:
+      - in: path
+        name: partner_id
+        description: Id of partner to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner_Response'
+
+    post:
+      tags:
+      - Partners
+      summary: Update a partner
+      description: Update a partner
+      operationId: updatePartnerById
+      parameters:
+      - in: path
+        name: partner_id
+        description: Id of partner to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                partner_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                partner_name:
+                  type: string
+                  example: Vincle
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Partner_Response'
+
+    delete:
+      tags:
+      - Partners
+      summary: Delete a partner
+      description: Delete a partner
+      operationId: deletePartnerById
+      parameters:
+      - in: path
+        name: partner_id
+        description: Id of partner to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+
+  /payment_methods:
+    get:
+      tags:
+        - Payment Methods
+      summary: Get a list of payment methods
+      operationId: getListOfPaymentMethods
+      description: By passing in the appropriate options, you can search for
+        available payment method in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up payment method
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod_List_Response'
+        '400':
+          description: bad input parameter
+
+    post:
+      tags:
+        - Payment Methods
+      summary: Adds a payment method
+      operationId: addPaymentMethod
+      description: Adds an item to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                method_code:
+                  type: string
+                  example: STRIPE
+                method_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                method_name:
+                  type: string
+                  example: Stripe
+                method_type:
+                  type: string
+                  example: CC
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod_Response'
+
+  /payment_methods/{method_code}:
+    get:
+      tags:
+      - Payment Methods
+      summary: Get a payment method
+      description: Returns a payment method
+      operationId: getPaymentMethodByCode
+      parameters:
+      - in: path
+        name: method_code
+        description: Code of payment method to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod_Response'
+
+    post:
+      tags:
+      - Payment Methods
+      summary: Update a payment method
+      description: Update a payment method
+      operationId: updatePaymentMethodByCode
+      parameters:
+      - in: path
+        name: method_code
+        description: Code of payment method to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                method_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                method_name:
+                  type: string
+                  example: Vincle
+                method_type:
+                  type: string
+                  example: CC
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentMethod_Response'
+
+    delete:
+      tags:
+      - Payment Methods
+      summary: Delete a payment method
+      description: Delete a payment method
+      operationId: deletePaymentMethodByCode
+      parameters:
+      - in: path
+        name: method_code
+        description: Code of payment method to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+
+  /payment_methods/{method_code}/properties/{property_type}:
+    post:
+      tags:
+      - Payment Methods
+      summary: Set a payment method
+      description: Set a payment method property
+      operationId: setPaymentMethodPropertyByType
+      parameters:
+      - in: path
+        name: method_code
+        description: Code of payment method to set
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: property_type
+        description: Number of property type to set
+        required: true
+        schema:
+          type: integer
+          format: int16
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                property_value:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+
+    delete:
+      tags:
+      - Payment Methods
+      summary: Delete a payment method property
+      description: Delete a payment method property
+      operationId: deletePaymentMethodPropertyByType
+      parameters:
+      - in: path
+        name: method_code
+        description: Code of payment method to delete
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: property_type
+        description: Number of property type to set
+        required: true
+        schema:
+          type: integer
+          format: int16
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+  
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get a list of products
+      operationId: getListOfProducts
+      description: By passing in the appropriate options, you can search for
+        available product in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up product
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_List_Response'
+        '400':
+          description: bad input parameter
+
+    post:
+      tags:
+        - Products
+      summary: Adds a product
+      operationId: addProduct
+      description: Adds an item to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                product_name:
+                  type: string
+                  example: Medical insuarance
+                product_type:
+                  type: string
+                  enum:
+                  - service
+                  - item
+                  example: service
+                product_description:
+                  type: string
+                  example: good product
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_Response'
+
+  /products/{product_id}:
+    get:
+      tags:
+      - Products
+      summary: Get a product
+      description: Returns a product
+      operationId: getProductById
+      parameters:
+      - in: path
+        name: product_id
+        description: Code of product to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_Response'
+
+    post:
+      tags:
+      - Products
+      summary: Update a product
+      description: Update a product
+      operationId: updateProductdById
+      parameters:
+      - in: path
+        name: product_id
+        description: Code of product to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_status:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 200
+                product_name:
+                  type: string
+                  example: Medical insuarance
+                product_type:
+                  type: string
+                  enum:
+                  - service
+                  - item
+                  example: service
+                product_description:
+                  type: string
+                  example: good product
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_Response'
+
+    delete:
+      tags:
+      - Products
+      summary: Delete a product
+      description: Delete a product
+      operationId: deleteProductById
+      parameters:
+      - in: path
+        name: product_id
+        description: Code of product to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get a list of users
+      operationId: getListOfUsers
+      description: By passing in the appropriate options, you can search for
+        available user in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up user
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User_List_Response'
+        '400':
+          description: bad input parameter
+
+    post:
+      tags:
+        - Users
+      summary: Adds a user
+      operationId: addUser
+      description: Adds an item to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_type:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 1
+                user_level:
+                  type: integer
+                  format: int16
+                  example: 100
+                first_name:
+                  type: string
+                  example: Hyoung Soo
+                last_name:
+                  type: string
+                  example: Kim
+      responses:
+        '200':
+          description: Successfull operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User_Response'
+
+  /users/{user_id}:
+    get:
+      tags:
+      - Users
+      summary: Get a user
+      description: Returns a user
+      operationId: getUserById
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User_Response'
+
+    post:
+      tags:
+      - Users
+      summary: Update a user
+      description: Update a user
+      operationId: updateUserdById
+      parameters:
+      - in: path
+        name: user_id
+        description: Id of user to update
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_status:
+                  type: integer
+                  format: int16
+                  example: 200
+                user_type:
+                  type: integer
+                  format: int16
+                  enum:
+                  - 1
+                user_level:
+                  type: integer
+                  format: int16
+                  example: 100
+                first_name:
+                  type: string
+                  example: Hyoung Soo
+                last_name:
+                  type: string
+                  example: Kim
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User_Response'
+
+    delete:
+      tags:
+      - Users
+      summary: Delete a user
+      description: Delete a user
+      operationId: deleteUserById
+      parameters:
+      - in: path
+        name: user_id
+        description: Id of user to delete
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    $ref: '#/components/schemas/Response'
+
+components:
+  schemas:
+  
+    Response:
+      type: object
+      properties:
+        response_code:
+          type: integer
+          format: int16
+          example: 200
+        response_message:
+          type: string
+        response_datetime:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+
+    Partner:
+      type: object
+      required:
+        - partner_id
+        - partner_status
+        - partner_name
+      properties:
+        partner_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        partner_status:
+          type: integer
+          format: int16
+          enum:
+          - 200
+          example: 200
+        partner_name:
+          type: string
+          example: Vincle
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+
+    Partner_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        partner:
+          $ref: '#/components/schemas/Partner'
+      
+    Partner_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        partners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Partner'
+          
+    PaymentMethod:
+      required:
+        - method_code
+        - method_status
+        - method_name
+        - method_type
+      properties:
+        method_code:
+          type: string
+          example: STRIPE
+        method_status:
+          type: integer
+          format: int16
+          enum:
+          - 200
+          example: 200
+        method_name:
+          type: string
+          example: Stripe
+        method_type:
+          type: string
+          example: CC
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+
+    PaymentMethod_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+
+    PaymentMethod_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        payment_methods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+
+    PaymentMethodProperty:
+      required:
+        - method_code
+        - property_type
+      properties:
+        method_code:
+          type: string
+        property_type:
+          type: integer
+          format: int16
+        property_value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        
+    PaymentMethodResponseType:
+      required:
+        - method_code
+        - payment_response
+        - payment_status
+      properties:
+        method_code:
+          type: string
+        payment_response:
+          type: string
+        payment_status:
+          type: integer
+          format: int16
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+
+    PaymentStatusType:
+      required:
+        - payment_status
+        - payment_status_name
+      properties:
+        payment_status:
+          type: integer
+          format: int16
+        payment_status_name:
+          type: string
+          example: Payment is in pending.
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        payment_status_description:
+          type: string
+
+    Product:
+      required:
+        - product_status
+        - product_name
+        - product_type
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        product_status:
+          type: integer
+          format: int16
+          enum:
+          - 200
+          example: 200
+        product_name:
+          type: string
+          example: Medical Insuarance
+        product_type:
+          type: string
+          enum:
+          - service
+          - item
+          example: service
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        product_description:
+          type: string
+
+    Product_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        product:
+          $ref: '#/components/schemas/Product'
+
+    Product_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+
+    TransactionType:
+      required:
+        - trx_type
+        - trx_type_name
+      properties:
+        trx_type:
+          type: integer
+          format: int16
+        trx_type_name:
+          type: string
+          example: Reward
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        trx_type_description:
+          type: string
+
+    User:
+      required:
+        - first_name
+        - last_name
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        partner:
+          $ref: '#/components/schemas/Partner'
+        user_status:
+          type: integer
+          format: int16
+          enum:
+          - 200
+          example: 200
+        user_type:
+          type: integer
+          format: int16
+          example: 100
+        user_level:
+          type: integer
+          format: int16
+          example: 1
+        first_name:
+          type: string
+          example: Mike
+        last_name:
+          type: string
+          example: Jackson
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+    
+    User_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        user:
+          $ref: '#/components/schemas/User'
+
+    User_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    UserAccount:
+      required:
+      - account_type
+      properties:
+        account_no:
+          type: integer
+          format: int32
+        account_type:
+          type: integer
+          format: int16
+        balance_amount:
+          type: integer
+          format: int32
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
