@@ -17,12 +17,10 @@ class UserAccountData(base.Data):
         pass
 
 
-    def get_list(self, user_id=None):
-        if not user_id:
-            user_no = self._find_user_no(user_id)
-            rows = db.session.query(UserAccount).filter_by(user_no=user_no)
-        else:
-            rows = db.session.query(UserAccount).all()
+    def get_list(self, user_id):
+        user_no = self._find_user_no(user_id)
+        rows = db.session.query(UserAccount).\
+                    filter(UserAccount.user_no == user_no)
 
         return rows
 
@@ -30,7 +28,8 @@ class UserAccountData(base.Data):
     def get(self, account_no, user_id):
         user_no = self._find_user_no(user_id)
         row = db.session.query(UserAccount).\
-                filter_by(account_no=account_no, user_no=user_no)
+                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.user_no == user_no).one_or_none()
         return row
 
 
@@ -38,37 +37,50 @@ class UserAccountData(base.Data):
         try:
             user_no = self._find_user_no(user_id)
             # Open a reward account
-            userAccount = UserAccount(user_no=user_no, account_type=1, balance_amount=0)
+            userAccount = UserAccount(
+                user_no=user_no,
+                account_type=1,
+                balance_amount=0)
             db.session.add(userAccount)
             db.session.commit()
         except:
             db.session.rollback()
+            raise
             
-        return True
+        return userAccount.account_no
 
 
     def change_status(self, account_no, user_id, new_status):
-        user_no = self._find_user_no(user_id)
-        db.session.query(UserAccount).\
-            filter(UserAccount.account_no == account_no).\
-            filter(UserAccount.user_no == user_no).\
-            update({
-                "account_status": new_status
-            })
+        try:
+            user_no = self._find_user_no(user_id)
+            db.session.query(UserAccount).\
+                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.user_no == user_no).\
+                update({
+                    "account_status": new_status
+                })
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        
+        return True
 
 
     def deposit(self, account_no, user_id, amount):
         try:
             user_no = self._find_user_no(user_id)
-            #db.session.query(UserAccount).filter_by(account_no=userAccount.account_no).\
-            #    update({
-            #                "balance_amount": userAccount.balance_amount,
-            #                "updated_at": get_current_datetime_str()
-            #            })
-            #db.session.commit()
+            db.session.query(UserAccount).\
+                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.user_no == user_no).\
+                update({
+                    "balance_amount": UserAccount.balance_amount + amount,
+                    "updated_at": get_current_datetime_str()
+                })
+            db.session.commit()
         except:
             db.session.rollback()
-            return False
+            raise
 
         return True
 
@@ -76,18 +88,27 @@ class UserAccountData(base.Data):
     def withdraw(self, account_no, user_id, amount):
         try:
             user_no = self._find_user_no(user_id)
-            pass
+            db.session.query(UserAccount).\
+                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.user_no == user_no).\
+                update({
+                    "balance_amount": UserAccount.balance_amount - amount,
+                    "updated_at": get_current_datetime_str()
+                })
+            db.session.commit()
         except:
             db.session.rollback()
-            return False
+            raise
 
         return True
 
 
     def _find_user_no(self, user_id):
-        row = User.query(User.user_no).\
+        user_no = None
+
+        row = db.session.query(User.user_no).\
                 filter(User.user_id == user_id).one_or_none()
-        if not row:
+        if row:
             user_no = row.user_no
 
         return user_no
