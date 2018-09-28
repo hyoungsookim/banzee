@@ -14,3 +14,9 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - pytest ./tests/test_100_messages.py
+      - pytest ./tests/test_301_partner.py
+      - pytest ./tests/test_302_payment_method.py
+      - pytest ./tests/test_303_product.py
+      - pytest ./tests/test_304_transaction_type
+      - pytest ./tests/test_305_user.py
