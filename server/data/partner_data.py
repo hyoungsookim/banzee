@@ -17,14 +17,16 @@ class PartnerData(base.Data):
 
 
     def get_list(self, q=None, offset=0, fetch=20):
-        rows = db.session.query(Partner).all()
+        _rows = db.session.query(Partner).all()
+        rows = [row.to_dict() for row in _rows]
+
         return rows
 
 
     def get(self, partner_id):
         row = db.session.query(Partner).\
                 filter(Partner.partner_id == partner_id).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, partner):
@@ -36,8 +38,9 @@ class PartnerData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            return None
+
+        return partner.to_dict()
 
 
     def update(self, partner):
@@ -55,9 +58,9 @@ class PartnerData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return partner.to_dict()
 
 
     def delete(self, partner_id):

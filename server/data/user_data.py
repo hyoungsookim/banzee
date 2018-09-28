@@ -16,16 +16,15 @@ class UserData(base.Data):
         pass
 
     def get_list(self):
-        #rows = User.query.all()
-        rows = db.session.query(User).all()
+        _rows = db.session.query(User).all()
+        rows = [row.to_dict() for row in _rows]
         return rows
 
 
     def get(self, user_id):
-        #row = User.query.filter_by(user_id=user_id)
         row = db.session.query(User).\
                 filter(User.user_id == user_id).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, user):
@@ -37,8 +36,9 @@ class UserData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            return None
+
+        return user
 
 
     def update(self, user):
@@ -59,9 +59,9 @@ class UserData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return user
 
 
     def delete(self, user_id):

@@ -19,8 +19,9 @@ class UserAccountData(base.Data):
 
     def get_list(self, user_id):
         user_no = self._find_user_no(user_id)
-        rows = db.session.query(UserAccount).\
+        _rows = db.session.query(UserAccount).\
                     filter(UserAccount.user_no == user_no)
+        rows = [row.to_dict() for row in _rows]
 
         return rows
 
@@ -30,7 +31,7 @@ class UserAccountData(base.Data):
         row = db.session.query(UserAccount).\
                 filter(UserAccount.account_no == account_no).\
                 filter(UserAccount.user_no == user_no).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def open(self, user_id):
@@ -45,9 +46,9 @@ class UserAccountData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            raise
+            return None
             
-        return userAccount.account_no
+        return userAccount
 
 
     def change_status(self, account_no, user_id, new_status):
@@ -62,7 +63,7 @@ class UserAccountData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            raise
+            return False
         
         return True
 
@@ -80,7 +81,7 @@ class UserAccountData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            raise
+            return False
 
         return True
 
@@ -98,7 +99,7 @@ class UserAccountData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            raise
+            return False
 
         return True
 

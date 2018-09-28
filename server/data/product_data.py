@@ -19,16 +19,15 @@ class ProductData(base.Data):
 
 
     def get_list(self):
-        #rows = Product.query.all()
-        rows = db.session.query(Product).all()
+        _rows = db.session.query(Product).all()
+        rows = [row.to_dict() for row in _rows]
         return rows
 
 
     def get(self, product_id):
-        #row = Product.query.filter_by(product_id=product_id)
         row = db.session.query(Product).\
                 filter(Product.product_id == product_id).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, product):
@@ -40,8 +39,9 @@ class ProductData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            return None
+
+        return product
 
 
     def update(self, product):
@@ -61,9 +61,9 @@ class ProductData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return product
 
 
     def delete(self, product_id):

@@ -19,16 +19,15 @@ class OrderData(base.Data):
 
 
     def get_list(self):
-        #rows = Order.query.all()
-        rows = db.session.query(Order).all()
+        _rows = db.session.query(Order).all()
+        rows = [row.to_dict() for row in _rows]
         return rows
 
 
     def get(self, order_id):
-        #row = Order.query.filter_by(order_id=order_id)
         row = db.session.query(Order).\
                 filter(Order.order_id == order_id).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, order):
@@ -40,8 +39,9 @@ class OrderData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            return None
+
+        return order
 
 
     def update(self, order):
@@ -63,9 +63,9 @@ class OrderData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return order
 
 
     def delete(self, order_id):

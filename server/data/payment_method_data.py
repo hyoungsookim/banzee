@@ -18,16 +18,16 @@ class PaymentMethodData(base.Data):
 
 
     def get_list(self):
-        #rows = PaymentMethod.query.all()
-        rows = db.session.query(PaymentMethod).all()
+        _rows = db.session.query(PaymentMethod).all()
+        rows = [row.to_dict() for row in _rows]
+
         return rows
 
 
     def get(self, method_code):
-        #row = PaymentMethod.query.filter_by(method_code=method_code)
         row = db.session.query(PaymentMethod).\
                 filter(PaymentMethod.method_code == method_code).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, paymentMethod):
@@ -39,8 +39,9 @@ class PaymentMethodData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            return None
+
+        return paymentMethod
 
 
     def update(self, paymentMethod):
@@ -59,14 +60,13 @@ class PaymentMethodData(base.Data):
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return paymentMethod
 
 
     def delete(self, method_code):
         try:
-            #db.session.delete(paymentMethod)
             db.session.query(PaymentMethod).\
                 filter(PaymentMethod.method_code == method_code).\
                 delete()

@@ -18,8 +18,10 @@ class PaymentMethodProperty(object):
 
 
     def get_list(self, method_code):
-        rows = db.session.query(PaymentMethodProperty).\
+        _rows = db.session.query(PaymentMethodProperty).\
                 filter(PaymentMethod.method_code == method_code).all()
+        rows = [row.to_dict() for row in _rows]
+
         return rows
 
     
@@ -28,7 +30,7 @@ class PaymentMethodProperty(object):
                 filter(PaymentMethodProperty.method_code == method_code).\
                 filter(PaymentMethodProperty.property_type == property_type).\
                 one_or_none()
-        return row
+        return row.to_dict()
 
 
     def set(self, paymentMethodProperty):
@@ -40,7 +42,8 @@ class PaymentMethodProperty(object):
             db.session.commit()
         except:
             db.session.rollback()
-            
+            return False
+
         return True
     
 

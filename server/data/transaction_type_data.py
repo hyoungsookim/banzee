@@ -17,29 +17,30 @@ class TransactionTypeData(base.Data):
 
 
     def get_list(self):
-        #rows = TransactionType.query.all()
-        rows = db.session.query(TransactionType).all()
+        _rows = db.session.query(TransactionType).all()
+        rows = [row.to_dict() for row in _rows]
         return rows
 
 
     def get(self, trx_type):
-        #row = TransactionType.query.filter_by(trx_type=trx_type)
         row = db.session.query(TransactionType).\
                 filter(TransactionType.trx_type == trx_type).one_or_none()
-        return row
+        return row.to_dict()
 
 
     def create(self, transactionType):
         if not isinstance(transactionType, TransactionType):
-            raise TypeError("Should be an instance of TransactionType class")
+            raise TypeError("transactionType should be an instance of TransactionType class")
 
         try:
             db.session.add(transactionType)
             db.session.commit()
         except:
             db.session.rollback()
-            
-        return True
+            raise
+            return None
+
+        return transactionType
 
 
     def update(self, transactionType):
@@ -50,21 +51,20 @@ class TransactionTypeData(base.Data):
             db.session.query(TransactionType).\
                 filter(TransactionType.trx_type == transactionType.trx_type).\
                 update({
-                    "trx_type_name": transactionType.trx_type,
+                    "trx_type_name": transactionType.trx_type_name,
                     "updated_at": get_current_datetime_str(),
                     "trx_type_description": transactionType.trx_type_description
                 })
             db.session.commit()
         except:
             db.session.rollback()
-            return False
+            return None
 
-        return True
+        return transactionType
 
 
     def delete(self, trx_type):
         try:
-            #db.session.delete(transactionType)
             db.session.query(TransactionType).\
                 filter(TransactionType.trx_type == trx_type).\
                 delete()
