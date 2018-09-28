@@ -1,8 +1,6 @@
 """
 """
 
-import simplejson as json
-
 from server.utils import *
 from server.models.partner import Partner
 from server.data.partner_data import PartnerData
@@ -18,8 +16,7 @@ class PartnerController(object):
         return self.partnerData.get_list(None, offset, fetch)
     
     def get(self, partner_id):
-        return json.dumps(self.partnerData.get(partner_id).to_dict(), 
-                sort_keys=False, encoding="utf-8", use_decimal=True, indent=4, default=str)
+        return self.partnerData.get(partner_id)
 
     def create(self, partner):
         return self.partnerData.create(partner)
