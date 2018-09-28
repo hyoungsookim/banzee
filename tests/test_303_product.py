@@ -16,7 +16,7 @@ class TestProduct(object):
     data = ProductData()
 
     def test_create_200_success(self):
-        assert self.data.create(self.info) == True
+        assert self.data.create(self.info) is not None
 
     def test_get_list(self):
         assert self.data.get_list() is not None
@@ -29,7 +29,7 @@ class TestProduct(object):
         self.info.product_name = "TEST_PRODUCT_NAME"
         self.info.product_type = "ITEM"
         self.info.product_description = "PRODUCT_DESCRIPTION"
-        assert self.data.update(self.info) == True
+        assert self.data.update(self.info) is not None
 
     def test_delete_200_success(self):
         assert self.data.delete('PRODUCT_ID_TEST') == True

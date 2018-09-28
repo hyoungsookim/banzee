@@ -18,13 +18,13 @@ class TestPaymentMethod(object):
         assert self.data.get("STRIPECARD") is not None
 
     def test_create_200_success(self):
-        assert self.data.create(self.info) == True
+        assert self.data.create(self.info) is not None
 
     def test_update_200_success(self):
         self.info.method_status = 0
         self.info.method_name = "UNIT_TEST"
         self.info.method_type = "CP"
-        assert self.data.update(self.info) == True
+        assert self.data.update(self.info) is not None
 
     def test_delete_200_success(self):
         assert self.data.delete('XXX') == True

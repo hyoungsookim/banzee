@@ -18,12 +18,12 @@ class TestPartnerData(object):
         assert self.controller.get("VINCLE") is not None
 
     def test_create_200_success(self):
-        assert self.controller.create(self.info) == True
+        assert self.controller.create(self.info) is not None
 
     def test_update_200_success(self):
         self.info.partner_status = 0
         self.info.partner_name = "UNIT_TEST"
-        assert self.controller.update(self.info) == True
+        assert self.controller.update(self.info) is not None
 
     def test_delete_200_success(self):
         assert self.controller.delete('XXX') == True

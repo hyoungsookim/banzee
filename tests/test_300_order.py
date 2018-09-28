@@ -19,7 +19,7 @@ class TestOrder(object):
     data = OrderData()
 
     def test_create_200_success(self):
-        assert self.data.create(self.info) == True
+        assert self.data.create(self.info) is not None
 
     def test_get_list(self):
         assert self.data.get_list() is not None
@@ -34,7 +34,7 @@ class TestOrder(object):
         self.info.total_amount = 108.5
         self.info.platform_type = "APPLE"
         self.info.app_type = "IPHONE"
-        assert self.data.update(self.info) == True
+        assert self.data.update(self.info) is not None
 
     def test_delete_200_success(self):
         assert self.data.delete('ORDER_ID_TEST') == True

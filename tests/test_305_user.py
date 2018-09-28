@@ -30,8 +30,8 @@ class TestUser(object):
     def test_create_200_success(self):
         global account_no
 
-        assert self.data.create(self.info) == True
-        account_no = self.accountData.open(self.info.user_id)
+        assert self.data.create(self.info) is not None
+        account_no = self.accountData.open(self.info.user_id).account_no
         assert account_no > 0
 
     def test_update_200_success(self):
@@ -40,7 +40,7 @@ class TestUser(object):
         self.info.user_level = 101
         self.info.first_name = "FIRST_NAME_TEST"
         self.info.last_name = "LAST_NAME_TEST"
-        assert self.data.update(self.info) == True
+        assert self.data.update(self.info) is not None
 
     def test_get_account_200_success(self):
         global account_no

@@ -12,7 +12,7 @@ class TestTransactionType(object):
     data = TransactionTypeData()
 
     def test_create_200_success(self):
-        assert self.data.create(self.info) == True
+        assert self.data.create(self.info) is not None
 
     def test_get_list(self):
         assert self.data.get_list() is not None
@@ -23,8 +23,8 @@ class TestTransactionType(object):
     def test_update_200_success(self):
         self.info.trx_type_name = "TYPE_TEST"
         self.info.trx_type_description = "UNIT_TEST"
-        assert self.data.update(self.info) == True
+        assert self.data.update(self.info) is not None
 
     def test_delete_200_success(self):
-        assert self.data.delete('TYPE_TEST') == True
+        assert self.data.delete(self.info.trx_type) == True
 
