@@ -18,7 +18,7 @@ app = Flask(__name__, static_folder=os.path.join('server', 'static'))
 app.url_map.strict_slashes = False
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://banzee:banzee!$@localhost/db_microtransaction"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 
 db = SQLAlchemy(app)
 
