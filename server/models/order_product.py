@@ -30,3 +30,15 @@ class OrderProduct(db.Model):
         self.unit_price = unit_price
         self.order_quantity = order_quantity
         self.total_product_amount = total_product_amount
+
+    def to_dict(self, output_attrs=None):
+        """Returns the model attributes as a dict
+        :output_attrs: list that includes attributes to convert
+        """
+        if output_attrs:
+            return {col.name: getattr(self, col.name) 
+                        for col in self.__table__.columns 
+                            if col.name in output_attrs}
+
+        return {col.name: getattr(self, col.name) 
+                    for col in self.__table__.columns}
