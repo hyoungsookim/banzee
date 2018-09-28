@@ -1,8 +1,6 @@
 """
 """
 
-from datetime import datetime
-
 from server.utils import *
 from server.models.partner import Partner
 from server.data import base
@@ -18,14 +16,12 @@ class PartnerData(base.Data):
         pass
 
 
-    def get_list(self):
-        #rows = Partner.query.all()
+    def get_list(self, q=None, offset=0, fetch=20):
         rows = db.session.query(Partner).all()
         return rows
 
 
     def get(self, partner_id):
-        #row = Partner.query.filter_by(partner_id=partner_id)
         row = db.session.query(Partner).\
                 filter(Partner.partner_id == partner_id).one_or_none()
         return row
@@ -33,7 +29,7 @@ class PartnerData(base.Data):
 
     def create(self, partner):
         if not isinstance(partner, Partner):
-            raise TypeError("Should be an instance of Partner class")
+            raise TypeError("'partner' parameter should be an instance of Partner class")
 
         try:
             db.session.add(partner)
@@ -46,7 +42,7 @@ class PartnerData(base.Data):
 
     def update(self, partner):
         if not isinstance(partner, Partner):
-            raise TypeError("Should be an instance of Partner class")
+            raise TypeError("'partner' parameter should be an instance of Partner class")
 
         try:
             db.session.query(Partner).\
@@ -66,7 +62,6 @@ class PartnerData(base.Data):
 
     def delete(self, partner_id):
         try:
-            #db.session.delete(partner)
             db.session.query(Partner).\
                 filter(Partner.partner_id == partner_id).\
                 delete(synchronize_session=False)
