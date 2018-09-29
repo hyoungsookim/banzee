@@ -2,8 +2,8 @@
 """
 
 from server.utils import *
-from server.models.payment_method import PaymentMethod
-from server.data.payment_method_data import PaymentMethodData
+#from server.models.transaction_type import TransactionType
+#from server.data.transaction_type_data import TransactionTypeData
 
 
 class TransactionController(object):
@@ -25,3 +25,4 @@ class TransactionController(object):
 
     def delete(self, trx_id):
         pass
+

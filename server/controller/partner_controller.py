@@ -13,7 +13,7 @@ class PartnerController(object):
         pass
 
     def get_list(self, q, offset=0, fetch=20):
-        return self.partnerData.get_list(None, offset, fetch)
+        return self.partnerData.get_list(q, offset, fetch)
     
     def get(self, partner_id):
         return self.partnerData.get(partner_id)
