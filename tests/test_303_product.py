@@ -3,7 +3,7 @@ import pytest
 # import decimal
 
 from server.models.product import Product
-from server.data.product_data import ProductData
+from server.controller.product_controller import ProductController
 
 
 class TestProduct(object):
@@ -13,23 +13,23 @@ class TestProduct(object):
                    product_type="SERVICE",
                    product_description=None)
 
-    data = ProductData()
+    controller = ProductController()
 
     def test_create_200_success(self):
-        assert self.data.create(self.info) is not None
+        assert self.controller.create(self.info) is not None
 
     def test_get_list(self):
-        assert self.data.get_list() is not None
+        assert self.controller.get_list() is not None
 
     def test_get(self):
-        assert self.data.get("PRODUcT_ID_TEST") is not None
+        assert self.controller.get("PRODUcT_ID_TEST") is not None
 
     def test_update_200_success(self):
         self.info.product_status = 0
         self.info.product_name = "TEST_PRODUCT_NAME"
         self.info.product_type = "ITEM"
         self.info.product_description = "PRODUCT_DESCRIPTION"
-        assert self.data.update(self.info) is not None
+        assert self.controller.update(self.info) is not None
 
     def test_delete_200_success(self):
-        assert self.data.delete('PRODUCT_ID_TEST') == True
+        assert self.controller.delete('PRODUCT_ID_TEST') == True
