@@ -17,7 +17,7 @@ class PaymentMethodData(base.Data):
         pass
 
 
-    def get_list(self):
+    def get_list(self, q=None, offset=0, fetch=20):
         _rows = db.session.query(PaymentMethod).all()
         rows = [row.to_dict() for row in _rows]
 

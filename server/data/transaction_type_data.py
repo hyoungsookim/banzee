@@ -45,7 +45,7 @@ class TransactionTypeData(base.Data):
 
     def update(self, transactionType):
         if not isinstance(transactionType, TransactionType):
-            raise TypeError("Should be an instance of TransactionType class")
+            raise TypeError("transactionType should be an instance of TransactionType class")
 
         try:
             db.session.query(TransactionType).\

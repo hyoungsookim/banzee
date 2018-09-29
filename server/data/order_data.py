@@ -32,7 +32,7 @@ class OrderData(base.Data):
 
     def create(self, order):
         if not isinstance(order, Order):
-            raise TypeError("Should be an instance of Order class")
+            raise TypeError("order should be an instance of Order class")
 
         try:
             db.session.add(order)
@@ -46,7 +46,7 @@ class OrderData(base.Data):
 
     def update(self, order):
         if not isinstance(order, Order):
-            raise TypeError("Should be an instance of Order class")
+            raise TypeError("order should be an instance of Order class")
 
         try:
             db.session.query(Order).\

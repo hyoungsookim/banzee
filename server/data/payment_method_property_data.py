@@ -8,7 +8,7 @@ from server.data.helper import ConnectionHelper
 from server.app import db
 
 
-class PaymentMethodProperty(object):
+class PaymentMethodPropertyData(object):
     """
     Payment method property data class for accssing database
     """
@@ -19,7 +19,7 @@ class PaymentMethodProperty(object):
 
     def get_list(self, method_code):
         _rows = db.session.query(PaymentMethodProperty).\
-                filter(PaymentMethod.method_code == method_code).all()
+                filter(PaymentMethodProperty.method_code == method_code).all()
         rows = [row.to_dict() for row in _rows]
 
         return rows
@@ -33,12 +33,14 @@ class PaymentMethodProperty(object):
         return row.to_dict()
 
 
-    def set(self, paymentMethodProperty):
-        if not isinstance(paymentMethodProperty, PaymentMethodProperty):
-            raise TypeError("Should be an instance of PaymentMethodProperty class")
+    def set(self, method_code, property_type, property_value=None):
+        property = PaymentMethodProperty(
+                        method_code, 
+                        property_type, 
+                        property_value)
 
         try:
-            db.session.add(paymentMethodProperty)
+            db.session.add(property)
             db.session.commit()
         except:
             db.session.rollback()

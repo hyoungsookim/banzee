@@ -18,7 +18,7 @@ class ProductData(base.Data):
         pass
 
 
-    def get_list(self):
+    def get_list(self, q=None, offset=1, fetch=20):
         _rows = db.session.query(Product).all()
         rows = [row.to_dict() for row in _rows]
         return rows
@@ -32,7 +32,7 @@ class ProductData(base.Data):
 
     def create(self, product):
         if not isinstance(product, Product):
-            raise TypeError("Should be an instance of Product class")
+            raise TypeError("product should be an instance of Product class")
 
         try:
             db.session.add(product)
@@ -46,7 +46,7 @@ class ProductData(base.Data):
 
     def update(self, product):
         if not isinstance(product, Product):
-            raise TypeError("Should be an instance of Product class")
+            raise TypeError("product should be an instance of Product class")
         
         try:
             db.session.query(Product).\

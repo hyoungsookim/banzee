@@ -29,7 +29,7 @@ class UserData(base.Data):
 
     def create(self, user):
         if not isinstance(user, User):
-            raise TypeError("Should be an instance of User class")
+            raise TypeError("user should be an instance of User class")
 
         try:
             db.session.add(user)
@@ -43,7 +43,7 @@ class UserData(base.Data):
 
     def update(self, user):
         if not isinstance(user, User):
-            raise TypeError("Should be an instance of User class")
+            raise TypeError("user should be an instance of User class")
 
         try:
             db.session.query(User).\
