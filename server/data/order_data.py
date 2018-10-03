@@ -7,7 +7,7 @@ from server.utils import *
 from server.models.orders import Order
 from server.data import base
 from server.data.helper import ConnectionHelper
-from server.app import db
+from server.db_factory import db
 
 
 class OrderData(base.Data):
