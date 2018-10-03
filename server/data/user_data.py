@@ -5,7 +5,7 @@ from server.utils import *
 from server.models.user import User
 from server.data import base
 from server.data.helper import ConnectionHelper
-from server.app import db
+from server.db_factory import db
 
 
 class UserData(base.Data):

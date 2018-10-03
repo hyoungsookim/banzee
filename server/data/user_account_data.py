@@ -6,7 +6,7 @@ from server.models.user import User
 from server.models.user_account import UserAccount
 from server.data import base
 from server.data.helper import ConnectionHelper
-from server.app import db
+from server.db_factory import db
 
 
 class UserAccountData(base.Data):

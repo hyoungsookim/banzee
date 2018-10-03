@@ -6,7 +6,8 @@ from sqlalchemy.dialects.mysql import INTEGER, SMALLINT
 #from sqlalchemy.ext.declarative import declarative_base
 
 from server.utils import *
-from server.app import db
+#from server.app import db
+from server.db_factory import db
 
 #Base = declarative_base()
 #metadata = Base.metadata
