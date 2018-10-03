@@ -11,7 +11,7 @@ from server.models.payment_method import PaymentMethod
 payment_method_resource = Blueprint("payment_method_resource", "payment_method_resource")
 
 @payment_method_resource.route("/v1/payment_methods", methods=["GET"])
-def get_partner_list():
+def get_payment_method_list():
     q = request.args.get("q", None)
     offset = request.args.get("offset", 0, type=int)
     fetch = request.args.get("fetch", 20, type=int)
@@ -25,12 +25,54 @@ def get_partner_list():
     return create_json_response(response_status, query_dict=None, body_key="payment_methods", body_dict=method_list)
 
 
-@payment_method_resource.route("/v1/payment_methods/<string:partner_id>", methods=["GET"])
-def get_partner(partner_id):
+@payment_method_resource.route("/v1/payment_methods/<string:method_code>", methods=["GET"])
+def get_payment_method(method_code):
     response_status = 200
     try:
-        partner = PaymentMethodController().get(partner_id)
+        method_dict = PaymentMethodController().get(method_code)
     except:
         raise
     
-    return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=partner)
+    return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
+
+
+@payment_method_resource.route("/v1/payment_methods", methods=["POST"])
+def create_payment_method():
+    response_status = 200
+    params = request.get_json
+
+    method_dict = None
+    try:
+        paymentMethod = PaymentMethod(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
+        method_dict = PaymentMethodController().create(paymentMethod)
+    except:
+        raise
+
+    return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
+
+
+@payment_method_resource.route("/v1/payment_methods/<string:method_code>", methods=["PUT"])
+def update_payment_method(partner_id):
+    response_status = 200
+    params = request.get_json
+
+    method_dict = None
+    try:
+        paymentMethod = PaymentMethod(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
+        method_dict = PaymentMethodController().update(paymentMethod)
+    except:
+        raise
+
+    return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
+
+
+@payment_method_resource.route("/v1/partners/<string:method_code>", methods=["DELETE"])
+def delete_payment_method(partner_id):
+    response_status = 200
+
+    try:
+        res = PaymentMethodController().delete(method_code)
+    except:
+        raise
+
+    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)

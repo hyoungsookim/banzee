@@ -43,7 +43,7 @@ def create_partner():
 
     partner_dict = None
     try:
-        partner = Partner(params["partner_id"], params["partner_name"], params=["partner_status"])
+        partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
         partner_dict = PartnerController().create(parnter)
     except:
         raise
@@ -58,7 +58,7 @@ def update_partner(partner_id):
 
     partner_dict = None
     try:
-        partner = Partner(params["partner_id"], params["partner_name"], params=["partner_status"])
+        partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
         partner_dict = PartnerController().update(parnter)
     except:
         raise
