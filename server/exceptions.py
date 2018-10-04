@@ -3,7 +3,7 @@ import sys
 from server.messages import *
 
 
-class ExceptionBase(Exception):
+class BanzeeException(Exception):
     """
     Abstrat class for Exception and Error
     """
@@ -34,7 +34,7 @@ class ExceptionBase(Exception):
         return get_message(self.__code)
 
 
-class InvalidRequestException(ExceptionBase):
+class InvalidRequestException(BanzeeException):
     """
     InvalidRequestException class
     """
@@ -43,7 +43,7 @@ class InvalidRequestException(ExceptionBase):
         super().__init__(400, attribute=attribute)
 
 
-class APIAuthenticationFailedException(ExceptionBase):
+class APIAuthenticationFailedException(BanzeeException):
     """
     APIAuthentictionFailedException class
     """
@@ -52,7 +52,7 @@ class APIAuthenticationFailedException(ExceptionBase):
         super().__init__(401)
 
 
-class ResourceNotFoundException(ExceptionBase):
+class ResourceNotFoundException(BanzeeException):
     """
     ResourceNotFoundException class
     """
@@ -61,7 +61,7 @@ class ResourceNotFoundException(ExceptionBase):
         super().__init__(404)
 
 
-class OperationNotAllowedError(ExceptionBase):
+class OperationNotAllowedError(BanzeeException):
     """
     OperationNotAllowedError class
     """
@@ -70,7 +70,7 @@ class OperationNotAllowedError(ExceptionBase):
         super().__init__(405)
 
 
-class ResourceDuplicatedException(ExceptionBase):
+class ResourceDuplicatedException(BanzeeException):
     """
     ResourceDuplicatedException class
     """
@@ -79,7 +79,7 @@ class ResourceDuplicatedException(ExceptionBase):
         super().__init__(409)
 
 
-class InternalServerError(ExceptionBase):
+class InternalServerError(BanzeeException):
     """
     InternalServerError class
     """
