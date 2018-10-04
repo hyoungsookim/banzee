@@ -4,8 +4,9 @@
 from flask import Blueprint, request
 
 from server.controller.partner_controller import PartnerController
-from server.api.response_resource import *
 from server.models.partner import Partner
+from server.exceptions import BanzeeException
+from server.api.response_resource import *
 
 
 partner_resource = Blueprint("partner_resource", "partner_resource")
@@ -19,8 +20,9 @@ def get_partner_list():
     response_status = 200
     try:
         partner_list = PartnerController().get_list(q, offset, fetch)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
     
     return create_json_response(response_status, query_dict=None, body_key="partners", body_dict=partner_list)
 
@@ -30,8 +32,9 @@ def get_partner(partner_id):
     response_status = 200
     try:
         partner = PartnerController().get(partner_id)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
     
     return create_json_response(response_status, query_dict=None, body_key="partner", body_dict=partner)
 
@@ -39,14 +42,18 @@ def get_partner(partner_id):
 @partner_resource.route("/v1/partners", methods=["POST"])
 def create_partner():
     response_status = 200
-    params = request.get_json
+    params = request.get_json()
 
     partner_dict = None
     try:
         partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
         partner_dict = PartnerController().create(parnter)
-    except:
-        raise
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key="partner", body_dict=partner_dict)
 
@@ -54,14 +61,18 @@ def create_partner():
 @partner_resource.route("/v1/partners/<string:partner_id>", methods=["PUT"])
 def update_partner(partner_id):
     response_status = 200
-    params = request.get_json
+    params = request.get_json()
 
     partner_dict = None
     try:
         partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
         partner_dict = PartnerController().update(parnter)
-    except:
-        raise
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key="partner", body_dict=partner_dict)
 
@@ -72,7 +83,8 @@ def delete_partner(partner_id):
 
     try:
         res = PartnerController().delete(partner_id)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)

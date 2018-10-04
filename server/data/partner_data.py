@@ -1,11 +1,14 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.partner import Partner
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class PartnerData(base.Data):
@@ -17,15 +20,26 @@ class PartnerData(base.Data):
 
 
     def get_list(self, q=None, offset=0, fetch=20):
-        _rows = db.session.query(Partner).all()
+        _rows = None
+        try:
+            _rows = db.session.query(Partner).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
 
         return rows
 
 
     def get(self, partner_id):
-        row = db.session.query(Partner).\
-                filter(Partner.partner_id == partner_id).one_or_none()
+        try:
+            row = db.session.query(Partner).\
+                    filter(Partner.partner_id == partner_id).one_or_none()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -36,9 +50,12 @@ class PartnerData(base.Data):
         try:
             db.session.add(partner)
             db.session.commit()
+
         except:
             db.session.rollback()
-            return None
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
 
         return partner.to_dict()
 
@@ -56,9 +73,12 @@ class PartnerData(base.Data):
                     "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
+
         except:
             db.session.rollback()
-            return None
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
 
         return partner.to_dict()
 
@@ -69,8 +89,11 @@ class PartnerData(base.Data):
                 filter(Partner.partner_id == partner_id).\
                 delete(synchronize_session=False)
             db.session.commit()
+
         except:
             db.session.rollback()
-            return False
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
         
         return True

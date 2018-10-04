@@ -4,8 +4,9 @@
 from flask import Blueprint, request
 
 from server.controller.payment_method_controller import PaymentMethodController
-from server.api.response_resource import *
 from server.models.payment_method import PaymentMethod
+from server.exceptions import BanzeeException
+from server.api.response_resource import *
 
 
 payment_method_resource = Blueprint("payment_method_resource", "payment_method_resource")
@@ -19,8 +20,9 @@ def get_payment_method_list():
     response_status = 200
     try:
         method_list = PaymentMethodController().get_list(q, offset, fetch)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
     
     return create_json_response(response_status, query_dict=None, body_key="payment_methods", body_dict=method_list)
 
@@ -30,8 +32,9 @@ def get_payment_method(method_code):
     response_status = 200
     try:
         method_dict = PaymentMethodController().get(method_code)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
     
     return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
 
@@ -39,40 +42,49 @@ def get_payment_method(method_code):
 @payment_method_resource.route("/v1/payment_methods", methods=["POST"])
 def create_payment_method():
     response_status = 200
-    params = request.get_json
+    params = request.get_json()
 
     method_dict = None
     try:
         paymentMethod = PaymentMethod(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
         method_dict = PaymentMethodController().create(paymentMethod)
-    except:
-        raise
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
 
 
 @payment_method_resource.route("/v1/payment_methods/<string:method_code>", methods=["PUT"])
-def update_payment_method(partner_id):
+def update_payment_method(method_code):
     response_status = 200
-    params = request.get_json
+    params = request.get_json()
 
     method_dict = None
     try:
         paymentMethod = PaymentMethod(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
         method_dict = PaymentMethodController().update(paymentMethod)
-    except:
-        raise
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
 
 
 @payment_method_resource.route("/v1/partners/<string:method_code>", methods=["DELETE"])
-def delete_payment_method(partner_id):
+def delete_payment_method(method_code):
     response_status = 200
 
     try:
         res = PaymentMethodController().delete(method_code)
-    except:
-        raise
+
+    except BanzeeException as ex:
+        response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
