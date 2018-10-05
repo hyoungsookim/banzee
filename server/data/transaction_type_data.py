@@ -1,11 +1,14 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.transaction_type import TransactionType
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class TransactionTypeData(base.Data):
@@ -17,14 +20,29 @@ class TransactionTypeData(base.Data):
 
 
     def get_list(self):
-        _rows = db.session.query(TransactionType).all()
+        _rows = None
+        try:
+            _rows = db.session.query(TransactionType).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
+
         return rows
 
 
     def get(self, trx_type):
-        row = db.session.query(TransactionType).\
-                filter(TransactionType.trx_type == trx_type).one_or_none()
+        try:
+            row = db.session.query(TransactionType).\
+                    filter(TransactionType.trx_type == trx_type).one_or_none()
+
+            if not row:
+                raise ResourceNotFoundException
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -35,12 +53,15 @@ class TransactionTypeData(base.Data):
         try:
             db.session.add(transactionType)
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             raise
-            return None
 
-        return transactionType
+        return transactionType.to_dict()
 
 
     def update(self, transactionType):
@@ -56,11 +77,15 @@ class TransactionTypeData(base.Data):
                     "trx_type_description": transactionType.trx_type_description
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return transactionType
+        return transactionType.to_dict()
 
 
     def delete(self, trx_type):
@@ -69,6 +94,10 @@ class TransactionTypeData(base.Data):
                 filter(TransactionType.trx_type == trx_type).\
                 delete()
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return False

@@ -1,11 +1,14 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.user import User
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class UserData(base.Data):
@@ -16,14 +19,28 @@ class UserData(base.Data):
         pass
 
     def get_list(self):
-        _rows = db.session.query(User).all()
+        try:
+            _rows = db.session.query(User).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
+
         return rows
 
 
     def get(self, user_id):
-        row = db.session.query(User).\
-                filter(User.user_id == user_id).one_or_none()
+        try:
+            row = db.session.query(User).\
+                    filter(User.user_id == user_id).one_or_none()
+
+            if not row:
+                raise ResourceNotFoundException
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -34,11 +51,15 @@ class UserData(base.Data):
         try:
             db.session.add(user)
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return user
+        return user.to_dict()
 
 
     def update(self, user):
@@ -57,11 +78,15 @@ class UserData(base.Data):
                     "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return user
+        return user.to_dict()
 
 
     def delete(self, user_id):
@@ -70,6 +95,10 @@ class UserData(base.Data):
                 filter(User.user_id == user_id).\
                 delete()
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return False

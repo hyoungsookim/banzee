@@ -1,11 +1,14 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.payment_method import PaymentMethod
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class PaymentMethodData(base.Data):
@@ -18,15 +21,29 @@ class PaymentMethodData(base.Data):
 
 
     def get_list(self, q=None, offset=0, fetch=20):
-        _rows = db.session.query(PaymentMethod).all()
+        _rows = None
+        try:
+            _rows = db.session.query(PaymentMethod).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
 
         return rows
 
 
     def get(self, method_code):
-        row = db.session.query(PaymentMethod).\
-                filter(PaymentMethod.method_code == method_code).one_or_none()
+        try:
+            row = db.session.query(PaymentMethod).\
+                    filter(PaymentMethod.method_code == method_code).one_or_none()
+
+            if not row:
+                raise ResourceNotFoundException
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -37,11 +54,15 @@ class PaymentMethodData(base.Data):
         try:
             db.session.add(paymentMethod)
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return None
 
-        return paymentMethod
+        return paymentMethod.to_dict()
 
 
     def update(self, paymentMethod):
@@ -58,11 +79,15 @@ class PaymentMethodData(base.Data):
                     "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return None
 
-        return paymentMethod
+        return paymentMethod.to_dict()
 
 
     def delete(self, method_code):
@@ -71,6 +96,10 @@ class PaymentMethodData(base.Data):
                 filter(PaymentMethod.method_code == method_code).\
                 delete()
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return False

@@ -37,6 +37,9 @@ class PartnerData(base.Data):
             row = db.session.query(Partner).\
                     filter(Partner.partner_id == partner_id).one_or_none()
 
+            if not row:
+                raise ResourceNotFoundException
+
         except OperationalError as ex:
             raise InternalServerError(ex)
 
@@ -51,11 +54,11 @@ class PartnerData(base.Data):
             db.session.add(partner)
             db.session.commit()
 
-        except:
-            db.session.rollback()
-
         except OperationalError as ex:
             raise InternalServerError(ex)
+
+        except:
+            db.session.rollback()
 
         return partner.to_dict()
 
@@ -74,11 +77,11 @@ class PartnerData(base.Data):
                 })
             db.session.commit()
 
-        except:
-            db.session.rollback()
-
         except OperationalError as ex:
             raise InternalServerError(ex)
+
+        except:
+            db.session.rollback()
 
         return partner.to_dict()
 
@@ -90,10 +93,10 @@ class PartnerData(base.Data):
                 delete(synchronize_session=False)
             db.session.commit()
 
-        except:
-            db.session.rollback()
-
         except OperationalError as ex:
             raise InternalServerError(ex)
+
+        except:
+            db.session.rollback()
         
         return True

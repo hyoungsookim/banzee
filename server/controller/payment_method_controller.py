@@ -9,36 +9,65 @@ from server.data.payment_method_property_data import PaymentMethodPropertyData
 
 
 class PaymentMethodController(object):
-    methodData = PaymentMethodData()
-    methodPropertyData = PaymentMethodPropertyData()
+    _methodData = PaymentMethodData()
+    _methodPropertyData = PaymentMethodPropertyData()
 
     def __init__(self):
         pass
 
     def get_list(self, q, offset=0, fetch=20):
-        return self.methodData.get_list(q, offset, fetch)
+        method_list = None
+        try:
+            method_list = self._methodData.get_list(q, offset, fetch)
+        except:
+            raise
+
+        return method_list
+
 
     def get(self, method_code):
-        return self.methodData.get(method_code)
+        method_dict = None
+        try:
+            method_dict = self._methodData.get(method_code)
+        except:
+            raise
+        
+        return method_dict
+
 
     def create(self, paymentMethod):
-        return self.methodData.create(paymentMethod)
+        method_dict = None
+        try:
+            method_dict = self._methodData.create(paymentMethod)
+        except:
+            raise
+
+        return method_dict
+
 
     def update(self, paymentMethod):
-        return self.methodData.update(paymentMethod)
+        method_dict = None
+        try:
+            method_dict = self._methodData.update(paymentMethod)
+        except:
+            raise
+
+        return method_dict
+
 
     def delete(self, method_code):
-        return self.methodData.delete(method_code)
+        return self._methodData.delete(method_code)
+
 
     def get_property_list(self, method_code):
-        return self.methodPropertyData.get_list(method_code)
+        return self._methodPropertyData.get_list(method_code)
     
     def get_property(self, method_code, property_type):
-        return self.methodPropertyData.get(method_code, property_type)
+        return self._methodPropertyData.get(method_code, property_type)
         
     def set_property(self, method_code, property_type, property_value=None):
-        return self.methodPropertyData.set(
+        return self._methodPropertyData.set(
             method_code, property_type, property_value)
     
     def delete_property(self, method_code, property_type):
-        return self.methodPropertyData.delete(method_code, property_type)
+        return self._methodPropertyData.delete(method_code, property_type)

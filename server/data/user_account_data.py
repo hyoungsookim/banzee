@@ -1,12 +1,15 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.user import User
 from server.models.user_account import UserAccount
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class UserAccountData(base.Data):
@@ -18,19 +21,29 @@ class UserAccountData(base.Data):
 
 
     def get_list(self, user_id):
-        user_no = self._find_user_no(user_id)
-        _rows = db.session.query(UserAccount).\
-                    filter(UserAccount.user_no == user_no)
+        try:
+            user_no = self._find_user_no(user_id)
+            _rows = db.session.query(UserAccount).\
+                        filter(UserAccount.user_no == user_no)
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
 
         return rows
 
 
     def get(self, account_no, user_id):
-        user_no = self._find_user_no(user_id)
-        row = db.session.query(UserAccount).\
-                filter(UserAccount.account_no == account_no).\
-                filter(UserAccount.user_no == user_no).one_or_none()
+        try:
+            user_no = self._find_user_no(user_id)
+            row = db.session.query(UserAccount).\
+                    filter(UserAccount.account_no == account_no).\
+                    filter(UserAccount.user_no == user_no).one_or_none()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -44,11 +57,15 @@ class UserAccountData(base.Data):
                 balance_amount=0)
             db.session.add(userAccount)
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return None
+            raise
             
-        return userAccount
+        return userAccount.to_dict()
 
 
     def change_status(self, account_no, user_id, new_status):
@@ -61,9 +78,13 @@ class UserAccountData(base.Data):
                     "account_status": new_status
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return False
+            raise
         
         return True
 
@@ -79,9 +100,13 @@ class UserAccountData(base.Data):
                     "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return False
+            raise
 
         return True
 
@@ -97,9 +122,13 @@ class UserAccountData(base.Data):
                     "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
-            return False
+            raise
 
         return True
 

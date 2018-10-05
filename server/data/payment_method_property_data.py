@@ -1,11 +1,14 @@
 """
 """
 
+from sqlalchemy.exc import OperationalError
+
 from server.utils import *
 from server.models.payment_method_property import PaymentMethodProperty
 from server.data import base
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
+from server.exceptions import *
 
 
 class PaymentMethodPropertyData(object):
@@ -18,18 +21,32 @@ class PaymentMethodPropertyData(object):
 
 
     def get_list(self, method_code):
-        _rows = db.session.query(PaymentMethodProperty).\
-                filter(PaymentMethodProperty.method_code == method_code).all()
+        _rows = None
+        try:
+            _rows = db.session.query(PaymentMethodProperty).\
+                    filter(PaymentMethodProperty.method_code == method_code).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         rows = [row.to_dict() for row in _rows]
 
         return rows
 
     
     def get(self, method_code, property_type):
-        row = db.session.query(PaymentMethodProperty).\
-                filter(PaymentMethodProperty.method_code == method_code).\
-                filter(PaymentMethodProperty.property_type == property_type).\
-                one_or_none()
+        try:
+            row = db.session.query(PaymentMethodProperty).\
+                    filter(PaymentMethodProperty.method_code == method_code).\
+                    filter(PaymentMethodProperty.property_type == property_type).\
+                    one_or_none()
+
+            if not row:
+                raise ResourceNotFoundException
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         return row.to_dict()
 
 
@@ -42,6 +59,10 @@ class PaymentMethodPropertyData(object):
         try:
             db.session.add(property)
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return False
@@ -56,6 +77,10 @@ class PaymentMethodPropertyData(object):
                 filter(PaymentMethodProperty.property_type == property_type).\
                 delete()
             db.session.commit()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
         except:
             db.session.rollback()
             return False
