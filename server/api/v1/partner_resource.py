@@ -18,6 +18,7 @@ def get_partner_list():
     fetch = request.args.get("fetch", 20, type=int)
 
     response_status = 200
+    partner_list = None
     try:
         partner_list = PartnerController().get_list(q, offset, fetch)
 
@@ -30,6 +31,7 @@ def get_partner_list():
 @partner_resource.route("/v1/partners/<string:partner_id>", methods=["GET"])
 def get_partner(partner_id):
     response_status = 200
+    partner = None
     try:
         partner = PartnerController().get(partner_id)
 

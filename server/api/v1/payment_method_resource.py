@@ -18,6 +18,7 @@ def get_payment_method_list():
     fetch = request.args.get("fetch", 20, type=int)
 
     response_status = 200
+    method_list = None
     try:
         method_list = PaymentMethodController().get_list(q, offset, fetch)
 
@@ -30,6 +31,7 @@ def get_payment_method_list():
 @payment_method_resource.route("/v1/payment_methods/<string:method_code>", methods=["GET"])
 def get_payment_method(method_code):
     response_status = 200
+    method_dict = None
     try:
         method_dict = PaymentMethodController().get(method_code)
 

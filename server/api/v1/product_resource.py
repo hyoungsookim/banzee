@@ -18,6 +18,7 @@ def get_product_list():
     fetch = request.args.get("fetch", 20, type=int)
 
     response_status = 200
+    product_list = None
     try:
         product_list = ProductController().get_list(q, offset, fetch)
 
@@ -30,6 +31,7 @@ def get_product_list():
 @product_resource.route("/v1/products/<string:product_id>", methods=["GET"])
 def get_product(product_id):
     response_status = 200
+    product_dict = None
     try:
         product_dict = ProductController().get(product_id)
 
