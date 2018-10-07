@@ -42,7 +42,7 @@ class PartnerData(base.Data):
 
         except OperationalError as ex:
             raise InternalServerError(ex)
-
+            
         return row.to_dict()
 
 
@@ -59,6 +59,7 @@ class PartnerData(base.Data):
 
         except:
             db.session.rollback()
+            raise
 
         return partner.to_dict()
 
@@ -68,13 +69,14 @@ class PartnerData(base.Data):
             raise TypeError("'partner' parameter should be an instance of Partner class")
 
         try:
-            db.session.query(Partner).\
-                filter(Partner.partner_id == partner.partner_id).\
-                update({
-                    "partner_status": partner.partner_status,
-                    "partner_name": partner.partner_name,
-                    "updated_at": get_current_datetime_str()
-                })
+            partner.updated_at = get_current_datetime_str()
+            #db.session.query(Partner).\
+            #    filter(Partner.partner_id == partner.partner_id).\
+            #    update({
+            #        "partner_status": partner.partner_status,
+            #        "partner_name": partner.partner_name,
+            #        "updated_at": get_current_datetime_str()
+            #    })
             db.session.commit()
 
         except OperationalError as ex:
@@ -82,6 +84,7 @@ class PartnerData(base.Data):
 
         except:
             db.session.rollback()
+            raise
 
         return partner.to_dict()
 
@@ -98,5 +101,6 @@ class PartnerData(base.Data):
 
         except:
             db.session.rollback()
-        
+            raise
+
         return True

@@ -12,8 +12,8 @@ class TransactionTypeController(object):
     def __init__(self):
         pass
 
-    def get_list(self):
-        return self.typeData.get_list()
+    def get_list(self, q=None, offset=0, fetch=20):
+        return self.typeData.get_list(q, offset, fetch)
 
     def get(self, trx_type):
         return self.typeData.get(trx_type)

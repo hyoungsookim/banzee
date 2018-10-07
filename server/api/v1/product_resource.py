@@ -48,7 +48,11 @@ def create_product():
 
     product_dict = None
     try:
-        product = Product(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
+        product = Product(product_id=None, 
+                          product_status = params["product_status"], 
+                          product_name = params["product_name"], 
+                          product_type = params["product_type"], 
+                          product_description = params["product_description"])
         product_dict = ProductController().create(product)
 
     except KeyError as ex:
@@ -61,13 +65,17 @@ def create_product():
 
 
 @product_resource.route("/v1/products/<string:product_id>", methods=["PUT"])
-def update_product(product):
+def update_product(product_id):
     response_status = 200
     params = request.get_json()
 
     product_dict = None
     try:
-        product = Product(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
+        product = Product(product_id, 
+                          params["product_status"], 
+                          params["product_name"], 
+                          params["product_type"], 
+                          params["product_description"])
         product_dict = ProductController().update(product)
 
     except KeyError as ex:

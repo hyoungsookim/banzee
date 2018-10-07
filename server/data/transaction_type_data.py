@@ -19,7 +19,7 @@ class TransactionTypeData(base.Data):
         pass
 
 
-    def get_list(self):
+    def get_list(self, q=None, offset=0, fetch=20):
         _rows = None
         try:
             _rows = db.session.query(TransactionType).all()
@@ -69,13 +69,13 @@ class TransactionTypeData(base.Data):
             raise TypeError("transactionType should be an instance of TransactionType class")
 
         try:
-            db.session.query(TransactionType).\
-                filter(TransactionType.trx_type == transactionType.trx_type).\
-                update({
-                    "trx_type_name": transactionType.trx_type_name,
-                    "updated_at": get_current_datetime_str(),
-                    "trx_type_description": transactionType.trx_type_description
-                })
+            #db.session.query(TransactionType).\
+            #    filter(TransactionType.trx_type == transactionType.trx_type).\
+            #    update({
+            #        "trx_type_name": transactionType.trx_type_name,
+            #        "updated_at": get_current_datetime_str(),
+            #        "trx_type_description": transactionType.trx_type_description
+            #    })
             db.session.commit()
 
         except OperationalError as ex:
@@ -100,6 +100,6 @@ class TransactionTypeData(base.Data):
 
         except:
             db.session.rollback()
-            return False
+            raise
         
         return True

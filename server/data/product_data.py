@@ -1,6 +1,7 @@
 """
 """
 
+#import uuid
 from datetime import datetime
 from sqlalchemy.exc import OperationalError
 
@@ -14,7 +15,7 @@ from server.exceptions import *
 
 class ProductData(base.Data):
     """
-    Partner data class for accssing database
+    Product data class for accssing database
     """
     def __init__(self):
         pass
@@ -60,9 +61,9 @@ class ProductData(base.Data):
 
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return product
+        return product.to_dict()
 
 
     def update(self, product):
@@ -70,15 +71,15 @@ class ProductData(base.Data):
             raise TypeError("product should be an instance of Product class")
         
         try:
-            db.session.query(Product).\
-                filter(Product.product_id == product.product_id).\
-                update({
-                    "product_status": product.product_status,
-                    "product_name": product.product_name,
-                    "product_type": product.product_type,
-                    "updated_at": get_current_datetime_str(),
-                    "product_description": product.product_description
-                })
+            #db.session.query(Product).\
+            #    filter(Product.product_id == product.product_id).\
+            #    update({
+            #        "product_status": product.product_status,
+            #        "product_name": product.product_name,
+            #        "product_type": product.product_type,
+            #        "updated_at": get_current_datetime_str(),
+            #        "product_description": product.product_description
+            #    })
             db.session.commit()
 
         except OperationalError as ex:
@@ -86,9 +87,9 @@ class ProductData(base.Data):
 
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return product
+        return product.to_dict()
 
 
     def delete(self, product_id):
@@ -103,6 +104,6 @@ class ProductData(base.Data):
 
         except:
             db.session.rollback()
-            return False
+            raise
         
         return True

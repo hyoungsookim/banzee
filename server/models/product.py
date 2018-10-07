@@ -1,5 +1,6 @@
 """
 """
+import uuid
 
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.mysql import INTEGER, SMALLINT, TEXT
@@ -26,6 +27,8 @@ class Product(db.Model):
 
     def __init__(self, product_id, product_status, product_name, product_type, 
                 product_description=None):
+        if not product_id:
+            product_id = str(uuid.uuid4())
         self.product_id = product_id
         self.product_status = product_status
         self.product_name = product_name

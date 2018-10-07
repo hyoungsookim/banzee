@@ -67,7 +67,7 @@ def update_payment_method(method_code):
 
     method_dict = None
     try:
-        paymentMethod = PaymentMethod(params["method_code"], params["method_status"], params["method_name"], params["method_type"])
+        paymentMethod = PaymentMethod("method_code", params["method_status"], params["method_name"], params["method_type"])
         method_dict = PaymentMethodController().update(paymentMethod)
 
     except KeyError as ex:
@@ -79,7 +79,7 @@ def update_payment_method(method_code):
     return create_json_response(response_status, query_dict=None, body_key="payment_method", body_dict=method_dict)
 
 
-@payment_method_resource.route("/v1/partners/<string:method_code>", methods=["DELETE"])
+@payment_method_resource.route("/v1/payment_methods/<string:method_code>", methods=["DELETE"])
 def delete_payment_method(method_code):
     response_status = 200
 

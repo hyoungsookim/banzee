@@ -49,7 +49,7 @@ def create_partner():
     partner_dict = None
     try:
         partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
-        partner_dict = PartnerController().create(parnter)
+        partner_dict = PartnerController().create(partner)
 
     except KeyError as ex:
         response_status = 400
@@ -67,8 +67,8 @@ def update_partner(partner_id):
 
     partner_dict = None
     try:
-        partner = Partner(params["partner_id"], params["partner_name"], params["partner_status"])
-        partner_dict = PartnerController().update(parnter)
+        partner = Partner(partner_id, params["partner_name"], params["partner_status"])
+        partner_dict = PartnerController().update(partner)
 
     except KeyError as ex:
         response_status = 400
