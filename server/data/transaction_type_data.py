@@ -76,6 +76,7 @@ class TransactionTypeData(base.Data):
             #        "updated_at": get_current_datetime_str(),
             #        "trx_type_description": transactionType.trx_type_description
             #    })
+            transactionType.updated_at = get_current_datetime_str()
             db.session.commit()
 
         except OperationalError as ex:

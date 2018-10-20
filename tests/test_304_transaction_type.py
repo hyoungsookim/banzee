@@ -16,6 +16,7 @@ class TestTransactionType(object):
         data = '{ \
                     "trx_type": 999, \
                     "trx_type_name": "TEST TRANSACTION TYPE", \
+                    "io_type": 1, \
                     "trx_type_description": "TEST TRANSACTION TYPE DESCRIPTION" \
                 }'.encode('utf8')
 
