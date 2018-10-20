@@ -12,14 +12,6 @@ base_url = "http://localhost:5000/v1/payment_methods"
 headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
 class TestPaymentMethod(object):
-    #info = PaymentMethod(
-    #        method_code='XXX', 
-    #        method_status=200, 
-    #        method_name='TEST', 
-    #        method_type='CC')
-
-    #controller = PaymentMethodController()
-
     def test_get_list_200(self):
         res = urllib.request.urlopen(base_url)
         data = str(res.read())
@@ -65,7 +57,7 @@ class TestPaymentMethod(object):
                     "method_type": "CR" \
                 }'.encode('utf8')
 
-        req = urllib.request.Request(base_url + '/STRIPECARD', 
+        req = urllib.request.Request(base_url + '/XXX', 
                                     data=data,
                                     headers=headers,
                                     method='PUT')
@@ -77,7 +69,7 @@ class TestPaymentMethod(object):
 
 
     def test_delete_200(self):
-        req = urllib.request.Request(base_url + '/STRIPECARD',
+        req = urllib.request.Request(base_url + '/XXX',
                                     headers=headers,
                                     method='DELETE')
         res = urllib.request.urlopen(req)
