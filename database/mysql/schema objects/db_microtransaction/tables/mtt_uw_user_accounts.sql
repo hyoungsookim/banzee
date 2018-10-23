@@ -6,6 +6,7 @@
 create table mtt_uw_user_accounts
 (
     account_no      integer             not null auto_increment,
+    account_id      varchar(50)         not null,
     user_no         integer             not null,
     account_type    smallint            not null,
     account_status  smallint            not null,
