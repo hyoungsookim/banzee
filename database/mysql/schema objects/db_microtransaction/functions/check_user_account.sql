@@ -1,5 +1,9 @@
 DELIMITER //
-create definer=`root`@`%` function `check_user_account`($user_id varchar(50), $account_type smallint)
+create definer=`root`@`%` function `check_user_account`
+(
+    $user_no        int, 
+    $account_type   smallint
+)
 returns int
     deterministic
     reads sql data
@@ -8,7 +12,7 @@ begin
 
     select account_no into $account_no 
     from mtt_uw_user_accounts 
-    where user_id = $user_id and account_type = $account_type;
+    where user_no = $user_no and account_type = $account_type;
 
     return $account_no;
 end;
