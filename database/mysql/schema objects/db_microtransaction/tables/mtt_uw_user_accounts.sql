@@ -11,6 +11,7 @@ create table mtt_uw_user_accounts
     account_type    smallint            not null,
     account_status  smallint            not null,
     balance_amount  integer             not null,
+    created_at      datetime            not null,
     updated_at      datetime            not null,
 
     constraint pk_mtt_uw_user_accounts
