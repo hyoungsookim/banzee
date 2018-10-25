@@ -3,7 +3,6 @@ create procedure mtp_uw_create_user
 (
     $user_id 				varchar(50),
     $partner_id 			varchar(50),
-    $user_email 			varchar(150),
     $first_name 			varchar(50),
     $last_name 				varchar(50),
 
@@ -17,7 +16,6 @@ main:begin
 
     if  ($user_id is null or trim($user_id) = '') or 
         ($partner_id is null or trim($partner_id) = '') or 
-        ($user_email is null or trim($user_email) = '') or 
         ($first_name is null or trim($first_name) = '') or 
         ($last_name is null or trim($last_name) = '') then
 		set $error_code = 30400;			/* invalid request */

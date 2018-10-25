@@ -19,10 +19,12 @@ class UserAccount(db.Model):
     )
 
     account_no      = db.Column(INTEGER, primary_key=True, autoincrement=True)
+    account_id      = db.Column(String(50), nullable=False, unique=True)
     user_no         = db.Column(INTEGER, nullable=False)
     account_type    = db.Column(SMALLINT, nullable=False)
     account_status  = db.Column(SMALLINT, nullable=False)
     balance_amount  = db.Column(INTEGER, nullable=False)
+    created_at      = db.Column(DateTime, nullable=False)
     updated_at      = db.Column(DateTime, nullable=False)
 
     def __init__(self, user_no, account_type, balance_amount=0):

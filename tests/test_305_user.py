@@ -28,11 +28,11 @@ class TestUser(object):
         assert self.data.get("TEST_USER_ID") is not None
 
     def test_create_200_success(self):
-        global account_no
+        #global account_no
 
         assert self.data.create(self.info) is not None
-        account_no = self.accountData.open(self.info.user_id).account_no
-        assert account_no > 0
+        #account_no = self.accountData.open(self.info.user_id).account_no
+        #assert account_no > 0
 
     def test_update_200_success(self):
         self.info.user_status = 0
@@ -42,6 +42,7 @@ class TestUser(object):
         self.info.last_name = "LAST_NAME_TEST"
         assert self.data.update(self.info) is not None
 
+    """
     def test_get_account_200_success(self):
         global account_no
         assert self.accountData.get(account_no, self.info.user_id)
@@ -57,7 +58,7 @@ class TestUser(object):
     def test_change_account_status_200_success(self):
         global account_no
         assert self.accountData.change_status(account_no, self.info.user_id, 0) == True
-
+    """
     def test_delete_200_success(self):
         assert self.data.delete('USER_ID_TEST') == True
 

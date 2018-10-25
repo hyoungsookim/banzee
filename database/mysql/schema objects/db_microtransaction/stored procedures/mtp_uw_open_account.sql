@@ -2,7 +2,6 @@ DELIMITER //
 create procedure mtp_uw_open_account
 (
     $user_id 				varchar(50),
-    $partner_id 			varchar(50),
     $account_type           smallint,
 
 	out $account_id 		varchar(50),
@@ -16,8 +15,7 @@ main:begin
 
     set $error_code = 0;
 
-    if  ($user_id is null or trim($user_id) = '') or 
-		($partner_id is null or trim($partner_id) = '') then 
+    if  ($user_id is null or trim($user_id) = '') then 
         set $error_code = 30400;			/* invalid request */
 		leave main;
     end if;

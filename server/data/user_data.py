@@ -48,9 +48,23 @@ class UserData(base.Data):
         if not isinstance(user, User):
             raise TypeError("user should be an instance of User class")
 
+        params = { 
+            "user_id": user.user_id, 
+            "partner_id": user.partner_id, 
+            "first_name": user.first_name, 
+            "last_name": user.last_name 
+        }
+
         try:
-            db.session.add(user)
+            db.session.execute("call mtp_uw_create_user(:user_id, :partner_id, :first_name, :last_name, @user_no, @error_code)", params)
+            res = db.session.execute("select @user_no, @error_code").fetchone()
             db.session.commit()
+
+            user_no = int(res[0])
+            error_code = int(res[1])
+
+            if (error_code != 0):
+                raise BanzeeException(error_code - 30000)
 
         except OperationalError as ex:
             raise InternalServerError(ex)

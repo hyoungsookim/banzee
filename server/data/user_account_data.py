@@ -47,16 +47,23 @@ class UserAccountData(base.Data):
         return row.to_dict()
 
 
-    def open(self, user_id):
+    def open(self, user_id, account_type):
+        params = { 
+            "user_id": user_id, 
+            "account_type": account_type
+        }
+
         try:
-            user_no = self._find_user_no(user_id)
-            # Open a reward account
-            userAccount = UserAccount(
-                user_no=user_no,
-                account_type=1,
-                balance_amount=0)
-            db.session.add(userAccount)
+            # todo: call mtp_uw_open_account instead of below code
+            db.session.execute("call mtp_uw_open_account(:user_id, :account_type, @account_id, @error_code)", params)
+            res = db.session.execute("select @account_id, @error_code").fetchone()
             db.session.commit()
+
+            account_id = str(res[0])
+            error_code = int(res[1])
+
+            if (error_code != 0):
+                raise BanzeeException(error_code - 30000)
 
         except OperationalError as ex:
             raise InternalServerError(ex)
@@ -64,8 +71,8 @@ class UserAccountData(base.Data):
         except:
             db.session.rollback()
             raise
-            
-        return userAccount.to_dict()
+        
+        return True
 
 
     def change_status(self, account_no, user_id, new_status):
