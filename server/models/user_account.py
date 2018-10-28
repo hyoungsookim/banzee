@@ -27,16 +27,19 @@ class UserAccount(db.Model):
     created_at      = db.Column(DateTime, nullable=False)
     updated_at      = db.Column(DateTime, nullable=False)
 
-    def __init__(self, user_no, account_type, balance_amount=0):
+
+    def __init__(self, user_no=None, account_type=None, balance_amount=None):
         self.user_no = user_no
         self.account_type = account_type
         self.account_status = 200
         self.balance_amount = balance_amount
+        self.created_at = get_current_datetime_str()
         self.updated_at = get_current_datetime_str()
+
 
     def to_dict(self, output_attrs=None):
         """Returns the model attributes as a dict
-        :output_attrs: list that includes attributes to convert
+s        :output_attrs: list that includes attributes to convert
         """
         if output_attrs:
             return {col.name: getattr(self, col.name) 

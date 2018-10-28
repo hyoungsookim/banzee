@@ -20,7 +20,7 @@ class UserAccountData(base.Data):
         pass
 
 
-    def get_list(self, user_id):
+    def get_list(self, user_id, q, offset=0, fetch=20):
         try:
             user_no = self._find_user_no(user_id)
             _rows = db.session.query(UserAccount).\
@@ -34,11 +34,11 @@ class UserAccountData(base.Data):
         return rows
 
 
-    def get(self, account_no, user_id):
+    def get(self, user_id, account_id):
         try:
             user_no = self._find_user_no(user_id)
             row = db.session.query(UserAccount).\
-                    filter(UserAccount.account_no == account_no).\
+                    filter(UserAccount.account_id == account_id).\
                     filter(UserAccount.user_no == user_no).one_or_none()
 
         except OperationalError as ex:
@@ -54,16 +54,15 @@ class UserAccountData(base.Data):
         }
 
         try:
-            # todo: call mtp_uw_open_account instead of below code
             db.session.execute("call mtp_uw_open_account(:user_id, :account_type, @account_id, @error_code)", params)
-            res = db.session.execute("select @account_id, @error_code").fetchone()
+            res = db.session.execute("select cast(@account_id as char(36)), @error_code").fetchone()
             db.session.commit()
 
-            account_id = str(res[0])
+            account_id = str(res[0]).encode("UTF-8")
             error_code = int(res[1])
 
             if (error_code != 0):
-                raise BanzeeException(error_code - 30000)
+                raise BanzeeException(error_code)
 
         except OperationalError as ex:
             raise InternalServerError(ex)
@@ -72,14 +71,14 @@ class UserAccountData(base.Data):
             db.session.rollback()
             raise
         
-        return True
+        return account_id
 
 
-    def change_status(self, account_no, user_id, new_status):
+    def change_status(self, user_id, account_id, new_status):
         try:
             user_no = self._find_user_no(user_id)
             db.session.query(UserAccount).\
-                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.account_id == account_id).\
                 filter(UserAccount.user_no == user_no).\
                 update({
                     "account_status": new_status
@@ -92,15 +91,15 @@ class UserAccountData(base.Data):
         except:
             db.session.rollback()
             raise
-        
+
         return True
 
 
-    def deposit(self, account_no, user_id, amount):
+    def deposit(self, user_id, account_id, amount):
         try:
             user_no = self._find_user_no(user_id)
             db.session.query(UserAccount).\
-                filter(UserAccount.account_no == account_no).\
+                filter(UserAccount.account_id == account_id).\
                 filter(UserAccount.user_no == user_no).\
                 update({
                     "balance_amount": UserAccount.balance_amount + amount,
@@ -118,7 +117,7 @@ class UserAccountData(base.Data):
         return True
 
 
-    def withdraw(self, account_no, user_id, amount):
+    def withdraw(self, user_id, account_id, amount):
         try:
             user_no = self._find_user_no(user_id)
             db.session.query(UserAccount).\

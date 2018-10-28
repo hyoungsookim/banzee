@@ -16,23 +16,23 @@ main:begin
     set $error_code = 0;
 
     if  ($user_id is null or trim($user_id) = '') then 
-        set $error_code = 30400;			/* invalid request */
+        set $error_code = 400;			/* invalid request */
 		leave main;
     end if;
 
     set $user_no = check_user($user_id);
     if ($user_no is null) then 
-		set $error_code = 30404;			/* resource not found */
+		set $error_code = 404;			/* resource not found */
 		leave main;
     end if;
 
     set $account_no = check_user_account($user_no, $account_type);
     if ($account_no > 0) then 
-		set $error_code = 30409;			/* resource duplicated */
+		set $error_code = 409;			/* resource duplicated */
 		leave main;
     end if;
 
-    set $new_id = uuid();
+    set $new_id = cast(uuid() as char(36));
     insert into mtt_uw_user_accounts
         (account_id, user_no, account_type, account_status, balance_amount, 
          created_at, updated_at)

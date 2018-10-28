@@ -18,13 +18,13 @@ main:begin
         ($partner_id is null or trim($partner_id) = '') or 
         ($first_name is null or trim($first_name) = '') or 
         ($last_name is null or trim($last_name) = '') then
-		set $error_code = 30400;			/* invalid request */
+		set $error_code = 400;			/* invalid request */
 		leave main;
     end if;
 
     set $user_no = check_user($user_id);
     if ($user_no > 0) then 
-		set $error_code = 30409;			/* resource duplicated */
+		set $error_code = 409;			/* resource duplicated */
 		leave main;
     end if;
 
@@ -42,8 +42,8 @@ main:begin
         (account_id, user_no, account_type, account_status, balance_amount, 
          created_at, updated_at)
     values
-        (uuid(), $user_no, 0,   200, 0, $created_at, $created_at),
-        (uuid(), $user_no, 840, 200, 0, $created_at, $created_at);
+        (cast(uuid() as char(36)), $user_no, 0,   200, 0, $created_at, $created_at),
+        (cast(uuid() as char(36)), $user_no, 840, 200, 0, $created_at, $created_at);
 end;
 //
 DELIMITER ;

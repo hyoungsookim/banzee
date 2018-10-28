@@ -18,7 +18,7 @@ class UserData(base.Data):
     def __init__(self):
         pass
 
-    def get_list(self):
+    def get_list(self, q, offset=0, fetch=20):
         try:
             _rows = db.session.query(User).all()
 
@@ -64,7 +64,7 @@ class UserData(base.Data):
             error_code = int(res[1])
 
             if (error_code != 0):
-                raise BanzeeException(error_code - 30000)
+                raise BanzeeException(error_code)
 
         except OperationalError as ex:
             raise InternalServerError(ex)
