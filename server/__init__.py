@@ -23,12 +23,14 @@ from server.api.v1.partner_resource import partner_resource
 from server.api.v1.payment_method_resource import payment_method_resource
 from server.api.v1.product_resource import product_resource
 from server.api.v1.transaction_type_resource import transaction_type_resource
+from server.api.v1.user_resource import user_resource
 
 app.register_blueprint(system_resource)
 app.register_blueprint(partner_resource)
 app.register_blueprint(payment_method_resource)
 app.register_blueprint(product_resource)
 app.register_blueprint(transaction_type_resource)
+app.register_blueprint(user_resource)
 
 #db = SQLAlchemy(app)
 

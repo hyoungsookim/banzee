@@ -58,7 +58,7 @@ class UserAccountData(base.Data):
             res = db.session.execute("select cast(@account_id as char(36)), @error_code").fetchone()
             db.session.commit()
 
-            account_id = str(res[0]).encode("UTF-8")
+            account_id = str(res[0])
             error_code = int(res[1])
 
             if (error_code != 0):

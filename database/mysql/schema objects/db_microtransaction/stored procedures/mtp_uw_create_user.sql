@@ -42,8 +42,8 @@ main:begin
         (account_id, user_no, account_type, account_status, balance_amount, 
          created_at, updated_at)
     values
-        (cast(uuid() as char(36)), $user_no, 0,   200, 0, $created_at, $created_at),
-        (cast(uuid() as char(36)), $user_no, 840, 200, 0, $created_at, $created_at);
+        (new_id(), $user_no, 0,   200, 0, $created_at, $created_at),
+        (new_id(), $user_no, 840, 200, 0, $created_at, $created_at);
 end;
 //
 DELIMITER ;

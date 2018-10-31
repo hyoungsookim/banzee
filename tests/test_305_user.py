@@ -1,13 +1,24 @@
+import urllib.request
+import json
 import pytest
 # import uuid
 # import decimal
 
 from server.models.user import User
-from server.models.user_account import UserAccount
-from server.controller.user_controller import UserController
+#from server.models.user_account import UserAccount
+#from server.controller.user_controller import UserController
+
+
+base_url = "http://localhost:5000/v1/users"
+headers = {'Content-Type': 'application/json;charset=UTF-8'}
+
+class UserAccount(object):
+    user_id = None
+    account_id = None
 
 
 class TestUser(object):
+    '''
     info = User(user_id="USER_ID_TEST", 
                 partner_id="VINCLE",
                 user_status=200,
@@ -17,46 +28,106 @@ class TestUser(object):
                 last_name="TEST_LAST_NAME")
 
     account_info = UserAccount()
-
     controller = UserController()
+    '''
+    account_info = UserAccount()
 
     def test_get_list(self):
-        assert self.controller.get_list(q=None, offset=0, fetch=20) is not None
+        res = urllib.request.urlopen(base_url)
+        data = str(res.read())
+
+        assert "200" in data
+        assert "users" in data
 
     def test_get(self):
-        assert self.controller.get("TEST_USER_ID") is not None
+        res = urllib.request.urlopen(base_url + '/TEST_USER_ID')
+        data = str(res.read())
+
+        assert "200" in data
+        assert "user" in data
 
     def test_create_200_success(self):
-        #global account_no
+        data = '{ \
+                    "user_id": "TEST_USER_X", \
+                    "partner_id": "VINCLE", \
+                    "first_name": "Hyoung Soo", \
+                    "last_name": "Kim" \
+                }'.encode('utf8')
 
-        assert self.controller.create(self.info) is not None
-        #account_no = self.accountData.open(self.info.user_id).account_no
-        #assert account_no > 0
+        req = urllib.request.Request(base_url,
+                                     data=data,
+                                     headers=headers,
+                                     method='POST')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
+        assert "user" in data
 
     def test_update_200_success(self):
-        self.info.user_status = 0
-        self.info.user_type = 2
-        self.info.user_level = 101
-        self.info.first_name = "FIRST_NAME_TEST"
-        self.info.last_name = "LAST_NAME_TEST"
-        assert self.controller.update(self.info) is not None
+        data = '{ \
+                    "user_status": 0, \
+                    "user_type": 99, \
+                    "user_level": 2, \
+                    "first_name": "Bong Hye", \
+                    "last_name": "Kim" \
+                }'.encode('utf8')
+
+        req = urllib.request.Request(base_url + '/TEST_USER_X', 
+                                    data=data,
+                                    headers=headers,
+                                    method='PUT')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
+        assert "user_id" in data
 
     def test_get_accounts_200_success(self):
-        assert self.controller.get_account_list(self.info.user_id) is not None
+        res = urllib.request.urlopen(base_url + '/TEST_USER_X/accounts')
+        data = str(res.read())
+
+        assert "200" in data
+        assert "accounts" in data
 
     def test_open_account_200_success(self):
-        self.account_info.account_id = self.controller.open_account(self.info.user_id, 410) # 410 - KRW
-        assert self.account_info.account_id is not None
+        # 410 - KRW
+        data = '{ \
+                    "user_id": "TEST_USER_X", \
+                    "account_type": 410 \
+                }'.encode('utf8')
+
+        req = urllib.request.Request(base_url + '/TEST_USER_X/accounts', 
+                                    data=data,
+                                    headers=headers,
+                                    method='POST')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
+
+        self.account_info.account_id = json.loads(data).get('account').get('account_id')
 
     def test_get_account_200_success(self):
-        user_id = self.info.user_id
         account_id = self.account_info.account_id
-        assert self.controller.get_account(user_id, account_id) is not None
+
+        res = urllib.request.urlopen(base_url + '/TEST_USER_X/accounts/' + account_id)
+        data = str(res.read())
+
+        assert "200" in data
+        assert "user" in data
 
     def test_close_account_200_success(self):
-        user_id = self.info.user_id
         account_id = self.account_info.account_id
-        assert self.controller.close_account(user_id, account_id) == True
+
+        req = urllib.request.Request(base_url + '/TEST_USER_X/accounts/' + account_id,
+                                    headers=headers,
+                                    method='DELETE')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
+
 
     """
     def test_deposit_200_success(self):
@@ -72,6 +143,12 @@ class TestUser(object):
         assert self.accountData.change_status(account_no, self.info.user_id, 0) == True
     """
     def test_delete_200_success(self):
-        assert self.controller.delete('USER_ID_TEST') == True
+        req = urllib.request.Request(base_url + '/TEST_USER_X',
+                                    headers=headers,
+                                    method='DELETE')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
 
 

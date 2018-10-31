@@ -32,7 +32,7 @@ main:begin
 		leave main;
     end if;
 
-    set $new_id = cast(uuid() as char(36));
+    set $new_id = new_id();
     insert into mtt_uw_user_accounts
         (account_id, user_no, account_type, account_status, balance_amount, 
          created_at, updated_at)

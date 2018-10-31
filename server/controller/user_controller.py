@@ -82,20 +82,21 @@ class UserController(object):
 
 
     def open_account(self, user_id, account_type):
-        account_id = None
+        account_dict = None
         try:
             account_id = self._userAccountData.open(user_id, account_type)
+            account_dict = self._userAccountData.get(user_id, account_id)
         except:
             raise
 
-        return account_id
+        return account_dict
 
 
     def close_account(self, user_id, account_id):
-        return self.change_status(user_id, account_id, -1)
+        return self.change_account_status(user_id, account_id, -1)
 
 
-    def change_status(self, user_id, account_id, new_status):
+    def change_account_status(self, user_id, account_id, new_status):
         return self._userAccountData.change_status(user_id, account_id, new_status)
 
 

@@ -28,8 +28,8 @@ class UserAccount(db.Model):
     updated_at      = db.Column(DateTime, nullable=False)
 
 
-    def __init__(self, user_no=None, account_type=None, balance_amount=None):
-        self.user_no = user_no
+    def __init__(self, account_type=None, balance_amount=None):
+        #self.user_no = user_no
         self.account_type = account_type
         self.account_status = 200
         self.balance_amount = balance_amount
