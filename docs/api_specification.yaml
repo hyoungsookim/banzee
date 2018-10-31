@@ -29,6 +29,8 @@ tags:
     description: Operations available to transaction types
   - name: Users
     description: Operations available to users
+  - name: Accounts
+    description: Operations available to accounts
   - name: Orders
     description: Operations available to orders
 
@@ -787,15 +789,14 @@ paths:
             schema:
               type: object
               properties:
-                user_type:
-                  type: integer
-                  format: int16
-                  enum:
-                  - 1
-                user_level:
-                  type: integer
-                  format: int16
-                  example: 100
+                user_id:
+                  type: string
+                  format: uuid
+                  description: This value must be same from membership data
+                  example: d290f1ee-6c54-4b01-90e6-d701748f0851
+                partner_id:
+                  type: string
+                  example: f301a2ff-6c54-4b01-90e6-d701748f0851
                 first_name:
                   type: string
                   example: Hyoung Soo
@@ -902,6 +903,147 @@ paths:
                   response:
                     $ref: '#/components/schemas/Response'
 
+  /users/{user_id}/accounts:
+    get:
+      tags:
+        - Users
+      summary: Get a list of accounts of a user
+      description: Get a list of accounts of a user
+      operationId: getListOfUserAccounts
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account_List_Response'
+        '400':
+          description: bad input parameter
+
+  /users/{user_id}/accounts/{account_id}:
+    get:
+      tags:
+      - Users
+      summary: Get a user account
+      description: Returns a user account
+      operationId: getUserAccountById
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: account_id
+        description: Code of account to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account_Response'
+
+  /accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Get a list of accounts
+      operationId: getListOfAccounts
+      description: By passing in the appropriate options, you can search for
+        available accounts in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up order
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+
+    post:
+      tags:
+        - Accounts
+      summary: Deposit a fund to a user account
+      operationId: depositFundToAccount
+      description: Create a deposit transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender_id:
+                  type: string
+                sender_name:
+                  type: string
+                  example: Hyoung Soo Kim
+                receiver_account_id:
+                  type: string
+                  format: uuid
+                fund_amount:
+                  type: number
+                  format: float
+                  example: 10.13
+                reason:
+                  type: string
+                  
+      responses:
+        '200':
+          description: Successful operation
+  
+  /accounts/{account_id}:
+    get:
+      tags:
+      - Accounts
+      summary: Get a user account
+      description: Returns a user account
+      operationId: getUserAccountById
+      parameters:
+      - in: path
+        name: account_id
+        description: Code of account to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account_Response'
+  
+  
   /orders:
     get:
       tags:
@@ -944,7 +1086,7 @@ paths:
 
     post:
       tags:
-      - Orders
+        - Orders
       summary: Create a order
       description: Create a order
       operationId: createOrder
@@ -1373,24 +1515,55 @@ components:
           items:
             $ref: '#/components/schemas/User'
 
-    UserAccount:
+    Account:
       required:
       - account_type
       properties:
-        account_no:
-          type: integer
-          format: int32
+        account_id:
+          type: string
         account_type:
           type: integer
           format: int16
-        balance_amount:
+        account_status:
           type: integer
-          format: int32
+          format: int16
+        balance_amount:
+          type: number
+          format: float
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2016-08-29 09:12:33'
         updated_at:
           type: string
           format: date-time
           readOnly: true
           example: '2016-08-29 09:12:33'
+    
+    Account_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        account:
+          $ref: '#/components/schemas/Account'
+    
+    Account_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
     
     Order:
       properties:
@@ -1523,4 +1696,3 @@ components:
           type: string
           format: date-time
           example: '2016-08-29 09:12:33'
-          
