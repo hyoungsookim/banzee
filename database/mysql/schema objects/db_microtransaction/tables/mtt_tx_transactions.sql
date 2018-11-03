@@ -4,6 +4,7 @@
 create table mtt_tx_transactions
 (
     trx_no          integer             not null auto_increment,
+    trx_id          varchar(50)         not null,
     account_no      integer             not null,
     trx_type        smallint            not null,
     trx_status      smallint            not null,
