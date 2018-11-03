@@ -29,8 +29,6 @@ tags:
     description: Operations available to transaction types
   - name: Users
     description: Operations available to users
-  - name: Accounts
-    description: Operations available to accounts
   - name: Orders
     description: Operations available to orders
 
@@ -955,18 +953,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account_Response'
 
-  /accounts:
+  /transactions:
     get:
       tags:
-        - Accounts
-      summary: Get a list of accounts
-      operationId: getListOfAccounts
+        - Transactions
+      summary: Get a list of transactions
+      operationId: getListOfTransactions
       description: By passing in the appropriate options, you can search for
-        available accounts in the system
+        available transactions in the system
       parameters:
         - in: query
           name: q
-          description: pass an optional search string for looking up order
+          description: pass an optional search string for looking up transaction
           required: false
           schema:
             type: string
@@ -991,8 +989,8 @@ paths:
 
     post:
       tags:
-        - Accounts
-      summary: Deposit a fund to a user account
+        - Transactions
+      summary: Deposit a fund to an account
       operationId: depositFundToAccount
       description: Create a deposit transaction
       requestBody:
@@ -1007,13 +1005,15 @@ paths:
                 sender_name:
                   type: string
                   example: Hyoung Soo Kim
-                receiver_account_id:
+                recipient_account_id:
                   type: string
                   format: uuid
                 fund_amount:
                   type: number
                   format: float
                   example: 10.13
+                source_transaction_id:
+                  type: string
                 reason:
                   type: string
                   
@@ -1021,17 +1021,17 @@ paths:
         '200':
           description: Successful operation
   
-  /accounts/{account_id}:
+  /transactions/{transaction_id}:
     get:
       tags:
-      - Accounts
-      summary: Get a user account
+      - Transactions
+      summary: Get a transaction
       description: Returns a user account
-      operationId: getUserAccountById
+      operationId: getTransactionById
       parameters:
       - in: path
-        name: account_id
-        description: Code of account to return
+        name: transaction_id
+        description: Code of transaction to return
         required: true
         schema:
           type: string
@@ -1565,6 +1565,7 @@ components:
           items:
             $ref: '#/components/schemas/Account'
     
+
     Order:
       properties:
         order_id:
