@@ -10,7 +10,7 @@ create table mtt_uw_user_accounts
     user_no         integer             not null,
     account_type    smallint            not null,
     account_status  smallint            not null,
-    balance_amount  integer             not null,
+    balance_amount  decimal(12, 2)      not null,
     created_at      datetime            not null,
     updated_at      datetime            not null,
 
