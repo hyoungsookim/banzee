@@ -16,6 +16,7 @@ class Transaction(db.Model):
     __tablename__ = 'mtt_tx_transactions'
 
     trx_no      = db.Column(INTEGER(11), primary_key=True, autoincrement=True)
+    trx_id      = db.Column(String(50), nullable=False, index=True)
     account_no  = db.Column(INTEGER(11), nullable=False, index=True)
     trx_type    = db.Column(SMALLINT(6), nullable=False)
     trx_status  = db.Column(SMALLINT(6), nullable=False)
@@ -24,7 +25,8 @@ class Transaction(db.Model):
     trx_amount  = db.Column(DECIMAL(12, 2), nullable=False)
     trx_note    = db.Column(String(50), nullable=True)
 
-    def __init__(self, account_no, trx_type, trx_status, trx_amount, trx_note=None):
+    def __init__(self, trx_id, account_no, trx_type, trx_status, trx_amount, trx_note=None):
+        self.trx_id = trx_id
         self.account_no = account_no
         self.trx_type = trx_type
         self.trx_status = trx_status
