@@ -3,20 +3,23 @@ create procedure mtp_uw_deposit_fund
 (
     $sender_id              varchar(50),
     $recipient_account_id   varchar(50),
+    $deposit_type           smallint, 
     $deposit_amount         decimal(12, 2),
-    $source_trx_id          varchar(50),
     $reason                 varchar(50),
 
+    out $trx_id             varchar(50),
     out $error_code		    int
 )
 main:begin
+    declare $sender_no int default null;
     declare $recipient_account_no int default null;
     declare $recipient_account_type smallint default null;
     declare $updated_at datetime default current_timestamp();
 
     set $error_code = 0;
 
-    if (check_user($sender_id) is null) then
+    set $sender_no = check_user($sender_id);
+    if ($sender_no is null) then
         set $error_code = 30400;            /* invalid request */
         leave main;
     end if; 
@@ -32,12 +35,6 @@ main:begin
         leave main;
     end if;
 
-    if ($source_trx_id is null or trim($source_trx_id) = '') then
-		set $error_code = 30400;			/* invalid request */
-		leave main;
-    end if;
-
-    #set $account_no = check_user_account($user_id, $account_type);
     select  account_no, account_type 
     into $recipient_account_no, $recipient_account_type 
     from mtt_uw_user_accounts 
@@ -48,6 +45,23 @@ main:begin
         leave main;
     end if;
 
+    /* 
+    account_type 0 means reward account.
+    $deposit_type is trx_type of mtt_tx_transaction_types
+    So $deposit_type 1200 means cash income and must go to account_type > 0 
+    */
+    if $recipient_account_type = 0 then 
+        if $deposit_type <> 1100 then
+            set $error_code = 30400;        /* invalid request */
+            leave main;
+        end if;
+    elseif $recipient_account_type > 0 then 
+        if $deposit_type <> 1200 then 
+            set $error_code = 30400;        /* invalid request */
+            leave main;
+        end if;
+    end if;
+
     /* start transaction; */
 
     update mtt_uw_user_accounts 
@@ -55,18 +69,19 @@ main:begin
         updated_at = $updated_at  
     where account_no = $recipient_account_no;
 
-    /*
-    call mtp_tx_create_transaction
+    call mtp_tx_write_transaction
     (
         $recipient_account_no,
-        $trx_type,
+        $deposit_type,
         $deposit_amount,
+        $sender_no, 
         $reason,
 
-        $trx_no, 
+        $trx_id, 
         $error_code
     );
 
+    /*
     if ($error_code = 0) then 
         commit;
     else

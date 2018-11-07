@@ -11,6 +11,7 @@ create table mtt_tx_transactions
     created_at      datetime            not null,
     updated_at      datetime            not null,
     trx_amount      decimal(12, 2)      not null,
+    sender_no       integer             null, 
     trx_note        varchar(50)         null,
 
     constraint pk_mtt_tx_transactions
