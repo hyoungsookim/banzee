@@ -64,9 +64,6 @@ class UserAccountData(base.Data):
             if (error_code != 0):
                 raise BanzeeException(error_code)
 
-        except OperationalError as ex:
-            raise InternalServerError(ex)
-
         except:
             db.session.rollback()
             raise
@@ -82,50 +79,6 @@ class UserAccountData(base.Data):
                 filter(UserAccount.user_no == user_no).\
                 update({
                     "account_status": new_status
-                })
-            db.session.commit()
-
-        except OperationalError as ex:
-            raise InternalServerError(ex)
-
-        except:
-            db.session.rollback()
-            raise
-
-        return True
-
-
-    def deposit(self, user_id, account_id, amount):
-        try:
-            user_no = self._find_user_no(user_id)
-            db.session.query(UserAccount).\
-                filter(UserAccount.account_id == account_id).\
-                filter(UserAccount.user_no == user_no).\
-                update({
-                    "balance_amount": UserAccount.balance_amount + amount,
-                    "updated_at": get_current_datetime_str()
-                })
-            db.session.commit()
-
-        except OperationalError as ex:
-            raise InternalServerError(ex)
-
-        except:
-            db.session.rollback()
-            raise
-
-        return True
-
-
-    def withdraw(self, user_id, account_id, amount):
-        try:
-            user_no = self._find_user_no(user_id)
-            db.session.query(UserAccount).\
-                filter(UserAccount.account_no == account_no).\
-                filter(UserAccount.user_no == user_no).\
-                update({
-                    "balance_amount": UserAccount.balance_amount - amount,
-                    "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
 

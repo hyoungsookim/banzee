@@ -12,11 +12,19 @@ headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
 class TestTransactionType(object):
 
+    def test_get_list_200(self):
+        res = urllib.request.urlopen(base_url)
+        data = str(res.read())
+
+        assert "200" in data
+        assert "transaction_types" in data
+
     def test_create_200(self):
         data = '{ \
                     "trx_type": 999, \
                     "trx_type_name": "TEST TRANSACTION TYPE", \
                     "io_type": 1, \
+                    "parent_trx_type": null, \
                     "trx_type_description": "TEST TRANSACTION TYPE DESCRIPTION" \
                 }'.encode('utf8')
 
@@ -30,13 +38,6 @@ class TestTransactionType(object):
         assert "200" in data
         assert "transaction_type" in data
 
-    def test_get_list_200(self):
-        res = urllib.request.urlopen(base_url)
-        data = str(res.read())
-
-        assert "200" in data
-        assert "transaction_types" in data
-
     def test_get_200(self):
         res = urllib.request.urlopen(base_url + '/999')
         data = str(res.read())
@@ -47,6 +48,8 @@ class TestTransactionType(object):
     def test_update_200(self):
         data = '{ \
                     "trx_type_name": "TEST TRANSACTION TYPE", \
+                    "io_type": 1, \
+                    "parent_trx_type": null, \
                     "trx_type_description": "TEST TRANSACTION TYPE DESCRIPTION" \
                 }'.encode('utf8')
 

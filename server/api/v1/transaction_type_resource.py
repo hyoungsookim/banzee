@@ -48,7 +48,13 @@ def create_transaction_type():
 
     type_dict = None
     try:
-        transactionType = TransactionType(params["trx_type"], params["trx_type_name"], params["io_type"], params["trx_type_description"])
+        transactionType = TransactionType(
+                            params["trx_type"], 
+                            params["trx_type_name"], 
+                            params["io_type"], 
+                            params["parent_trx_type"], 
+                            params["trx_type_description"]
+        )
         type_dict = TransactionTypeController().create(transactionType)
 
     except KeyError as ex:
@@ -67,7 +73,14 @@ def update_transaction_type(trx_type):
 
     type_dict = None
     try:
-        transactionType = TransactionType(trx_type, params["trx_type_name"], params["trx_type_description"])
+        transactionType = TransactionType(
+                            trx_type, 
+                            params["trx_type_name"], 
+                            params["io_type"], 
+                            params["parent_trx_type"],
+                            params["trx_type_description"]
+        )
+
         type_dict = TransactionTypeController().update(transactionType)
 
     except KeyError as ex:
