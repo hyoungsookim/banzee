@@ -4,23 +4,18 @@ import pytest
 # import uuid
 # import decimal
 
-from server.models.partner import Partner
-#from server.controller.partner_controller import PartnerController
+#from server.models.partner import Partner
 
 
 base_url = "http://localhost:5000/v1/partners"
 headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
 class TestPartnerData(object):
-    #info = Partner(partner_id='XXX', partner_name='TEST_PARTNER', partner_status=200)
-
-    #controller = PartnerController()
 
     def test_get_list_200(self):
         res = urllib.request.urlopen(base_url)
         data = str(res.read())
 
-        #assert self.controller.get_list(None, 0, 20) is not None
         assert "200" in data
         assert "partners" in data
 
@@ -28,7 +23,6 @@ class TestPartnerData(object):
         res = urllib.request.urlopen(base_url + '/VINCLE')
         data = str(res.read())
 
-        #assert self.controller.get("VINCLE") is not None
         assert "200" in data
         assert "partner" in data
 
