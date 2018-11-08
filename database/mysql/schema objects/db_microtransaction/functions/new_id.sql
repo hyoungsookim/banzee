@@ -1,6 +1,6 @@
 DELIMITER //
 CREATE DEFINER=`root`@`%` FUNCTION `new_id`()
-RETURNS char(36) CHARSET utf8
+RETURNS varchar(36) CHARSET utf8
     NO SQL
     DETERMINISTIC
 begin
