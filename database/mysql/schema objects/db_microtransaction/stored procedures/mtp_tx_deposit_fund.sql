@@ -1,5 +1,5 @@
 DELIMITER //
-create procedure mtp_uw_deposit_fund
+create procedure mtp_tx_deposit_fund
 (
     $sender_id              varchar(50),
     $recipient_account_id   varchar(50),
