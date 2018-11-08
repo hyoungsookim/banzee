@@ -128,20 +128,6 @@ class TestUser(object):
 
         assert "200" in data
 
-
-    """
-    def test_deposit_200_success(self):
-        global account_no
-        assert self.accountData.deposit(account_no, self.info.user_id, 1000) == True
-
-    def test_withdraw_200_success(self):
-        global account_no
-        assert self.accountData.withdraw(account_no, self.info.user_id, 300) == True
-
-    def test_change_account_status_200_success(self):
-        global account_no
-        assert self.accountData.change_status(account_no, self.info.user_id, 0) == True
-    """
     def test_delete_200_success(self):
         req = urllib.request.Request(base_url + '/TEST_USER_X',
                                     headers=headers,
