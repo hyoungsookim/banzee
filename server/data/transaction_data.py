@@ -60,16 +60,15 @@ class TransactionData(base.Data):
             db.session.execute("call mtp_tx_deposit_fund(:sender_id, :recipient_account_id, :deposit_type, :deposit_amount, :reason, @trx_id, @error_code)", params)
             res = db.session.execute("select @trx_id, @error_code").fetchone()
 
-            trx_id = res[0].decode()
             error_code = int(res[1])
-            
             if (error_code != 0):
                 raise BanzeeException(error_code)
 
-            db.session.commit()
+            trx_id = res[0].decode()
+            #db.session.commit()
 
         except:
-            db.session.rollback()
+            #db.session.rollback()
             raise
 
         return trx_id

@@ -16,6 +16,12 @@ main:begin
     declare $recipient_account_type smallint default null;
     declare $updated_at datetime default current_timestamp();
 
+    declare exit handler for SQLEXCEPTION, SQLWARNING
+    begin
+        rollback;
+        resignal;
+    end;
+
     set $error_code = 0;
 
     set $sender_no = check_user($sender_id);
@@ -62,7 +68,7 @@ main:begin
         end if;
     end if;
 
-    /* start transaction; */
+    start transaction;
 
     update mtt_uw_user_accounts 
     set balance_amount = balance_amount + $deposit_amount,
@@ -81,13 +87,11 @@ main:begin
         $error_code
     );
 
-    /*
-    if ($error_code = 0) then 
+    if $error_code = 0 then 
         commit;
     else
         rollback;
-    
-    */
+	end if;
 end;
 //
 DELIMITER ;

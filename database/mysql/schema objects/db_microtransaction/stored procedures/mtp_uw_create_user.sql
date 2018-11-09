@@ -12,6 +12,12 @@ create procedure mtp_uw_create_user
 main:begin
     declare $created_at datetime default current_timestamp();
 
+    declare exit handler for SQLEXCEPTION, SQLWARNING
+    begin
+        rollback;
+        resignal;
+    end;
+
     set $error_code = 0;
 
     if  ($user_id is null or trim($user_id) = '') or 
@@ -27,6 +33,8 @@ main:begin
 		set $error_code = 409;			/* resource duplicated */
 		leave main;
     end if;
+
+    start transaction;
 
     insert into mtt_uw_users
         (user_id, partner_id, user_status, user_type, user_level, 
@@ -44,6 +52,8 @@ main:begin
     values
         (new_id(), $user_no, 0,   200, 0, $created_at, $created_at),
         (new_id(), $user_no, 840, 200, 0, $created_at, $created_at);
+
+    commit;
 end;
 //
 DELIMITER ;
