@@ -53,7 +53,7 @@ def create_transaction_type():
                             params["trx_type_name"], 
                             params["io_type"], 
                             params["parent_trx_type"], 
-                            params["trx_type_description"]
+                            params.get("trx_type_description", None)
         )
         type_dict = TransactionTypeController().create(transactionType)
 
@@ -78,7 +78,7 @@ def update_transaction_type(trx_type):
                             params["trx_type_name"], 
                             params["io_type"], 
                             params["parent_trx_type"],
-                            params["trx_type_description"]
+                            params.get("trx_type_description", None)
         )
 
         type_dict = TransactionTypeController().update(transactionType)

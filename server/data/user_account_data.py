@@ -55,7 +55,7 @@ class UserAccountData(base.Data):
 
         try:
             db.session.execute("call mtp_uw_open_account(:user_id, :account_type, @account_id, @error_code)", params)
-            res = db.session.execute("select cast(@account_id as char(36)), @error_code").fetchone()
+            res = db.session.execute("select @account_id, @error_code").fetchone()
 
             error_code = int(res[1])
             if (error_code != 0):

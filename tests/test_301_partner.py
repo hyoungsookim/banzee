@@ -10,7 +10,7 @@ import pytest
 base_url = "http://localhost:5000/v1/partners"
 headers = {'Content-Type': 'application/json;charset=UTF-8'}
 
-class TestPartnerData(object):
+class TestPartner(object):
 
     def test_get_list_200(self):
         res = urllib.request.urlopen(base_url)

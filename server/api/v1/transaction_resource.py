@@ -51,7 +51,7 @@ def deposit_fund():
         recipient_account_id = params["recipient_account_id"]
         deposit_type = params["deposit_type"]
         deposit_amount = params["deposit_amount"]
-        reason = params["reason"]
+        reason = params.get("reason", None)
 
         transaction_dict = TransactionController().deposit_fund(
                                                         sender_id,

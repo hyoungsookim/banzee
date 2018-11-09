@@ -52,7 +52,7 @@ def create_product():
                           product_status = params["product_status"], 
                           product_name = params["product_name"], 
                           product_type = params["product_type"], 
-                          product_description = params["product_description"])
+                          product_description = params.get("product_description", None))
         product_dict = ProductController().create(product)
 
     except KeyError as ex:
@@ -75,7 +75,7 @@ def update_product(product_id):
                           params["product_status"], 
                           params["product_name"], 
                           params["product_type"], 
-                          params["product_description"])
+                          params.get("product_description", None))
         product_dict = ProductController().update(product)
 
     except KeyError as ex:

@@ -28,3 +28,5 @@ def check_system():
         res_dict.update(DATABASE_HOST=Config.DATABASE_HOST)
 
     return create_json_response(response_status=200, query_dict=None, body_key="system", body_dict=res_dict)
+
+
