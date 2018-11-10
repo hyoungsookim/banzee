@@ -23,10 +23,12 @@ tags:
     description: Operations available to payment methods
   - name: Products
     description: Operations available to products
-  - name: Transactions
-    description: Operations available to transactions
+  - name: Account Types
+    description: Operations available to account types
   - name: Transaction Types
     description: Operations available to transaction types
+  - name: Transactions
+    description: Operations available to transactions
   - name: Users
     description: Operations available to users
   - name: Orders
@@ -588,14 +590,51 @@ paths:
                   response:
                     $ref: '#/components/schemas/Response'
 
+  /account_types:
+    get:
+      tags:
+        - Account Types
+      summary: Get a list of account types
+      operationId: getListOfAccountTypes
+      description: By passing in the appropriate options, you can search for available account type in the system
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up transaction type
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: offset
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: fetch
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountType_List_Response'
+
+
   /transaction_types:
     get:
       tags:
         - Transaction Types
       summary: Get a list of transaction types
       operationId: getListOfTransactionTypes
-      description: By passing in the appropriate options, you can search for
-        available transaction type in the system
+      description: By passing in the appropriate options, you can search for available transaction type in the system
       parameters:
         - in: query
           name: q
@@ -625,8 +664,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TransactionType_List_Response'
-        '400':
-          description: bad input parameter
 
     post:
       tags:
@@ -945,6 +982,7 @@ paths:
         required: true
         schema:
           type: string
+          format: uuid
       responses:
         '200':
           description: Successful operation
@@ -952,6 +990,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Account_Response'
+
+  /users/{user_id}/transactions:
+    get:
+      tags:
+        - Users
+      summary: Get a list of transactions of a user
+      description: Get a list of transactions of a user
+      operationId: getListOfUserTransactions
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction_List_Response'
+
+  /users/{user_id}/transactions/{transaction_id}:
+    get:
+      tags:
+      - Users
+      summary: Get a user transaction
+      description: Returns a user transaction detail information
+      operationId: getUserTransactionById
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: transaction_id
+        description: Code of transaction to return
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction_Response'
 
   /transactions:
     get:
@@ -1002,13 +1091,10 @@ paths:
               properties:
                 sender_id:
                   type: string
-                sender_name:
-                  type: string
-                  example: Hyoung Soo Kim
                 recipient_account_id:
                   type: string
                   format: uuid
-                fund_amount:
+                deposit_amount:
                   type: number
                   format: float
                   example: 10.13
@@ -1337,6 +1423,49 @@ components:
         payment_status_description:
           type: string
 
+    AccountType:
+      required:
+        - account_type
+        - account_type_status
+        - account_type_name
+      properties:
+        account_type:
+          type: integer
+          format: int16
+        account_type_status:
+          type: integer
+          format: int16
+        account_type_name:
+          type: string
+          example: Cash account.
+        created_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2016-08-29 09:12:33'
+        account_type_description:
+          type: string
+
+    AccountType_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountType'
+
     Product:
       required:
         - product_status
@@ -1402,13 +1531,13 @@ components:
 
     TransactionType:
       required:
-        - trx_type
-        - trx_type_name
+        - transaction_type
+        - transaction_type_name
       properties:
-        trx_type:
+        transaction_type:
           type: integer
           format: int16
-        trx_type_name:
+        transaction_type_name:
           type: string
           example: Reward
         created_at:
@@ -1421,7 +1550,7 @@ components:
           format: date-time
           readOnly: true
           example: '2016-08-29 09:12:33'
-        trx_type_description:
+        transaction_type_description:
           type: string
 
     TransactionType_Response:
@@ -1447,6 +1576,62 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionType'
+
+    Transaction:
+      properties:
+        transaction_id:
+          type: string
+          format: UUID
+        account_id:
+          type: string
+          format: UUID
+        transaction_type:
+          type: integer
+          format: int16
+        transaction_status:
+          type: integer
+          format: int16
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2016-08-29 09:12:33'
+        transaction_amount:
+          type: number
+          format: float
+        sender_id:
+          type: string
+        transaction_note:
+          type: string
+
+    Transaction_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        transaction_type:
+          $ref: '#/components/schemas/Transaction'
+
+    Transaction_List_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        transaction_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
 
     User:
       required:
@@ -1697,3 +1882,4 @@ components:
           type: string
           format: date-time
           example: '2016-08-29 09:12:33'
+          
