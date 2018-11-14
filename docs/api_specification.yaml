@@ -1102,10 +1102,22 @@ paths:
                   type: string
                 reason:
                   type: string
-                  
       responses:
         '200':
           description: Successful operation
+
+    delete:
+      tags:
+        - Transactions
+      summary: Withraw a fund from an account
+      operationId: withrawFundFromAccount
+      description: Create a withrawal transaction
+      responses:
+        '200':
+          description: Successful operation
+                  
+    
+    
   
   /transactions/{transaction_id}:
     get:
@@ -1437,7 +1449,7 @@ components:
           format: int16
         account_type_name:
           type: string
-          example: Cash account.
+          example: Cash account
         created_at:
           type: string
           format: date-time
@@ -1461,7 +1473,7 @@ components:
           type: integer
           format: int32
           example: 20
-        products:
+        account_types:
           type: array
           items:
             $ref: '#/components/schemas/AccountType'
@@ -1882,4 +1894,3 @@ components:
           type: string
           format: date-time
           example: '2016-08-29 09:12:33'
-          
