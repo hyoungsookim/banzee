@@ -19,7 +19,7 @@ def get_transaction_list():
     response_status = 200
     transactioin_list = None
     try:
-        transaction_list = TransactionController().get_list(q, offset, fetch)
+        transaction_list = TransactionController().get_list(None, q, offset, fetch)
 
     except BanzeeException as ex:
         response_status = ex.code

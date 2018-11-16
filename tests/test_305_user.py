@@ -117,6 +117,14 @@ class TestUser(object):
         assert "200" in data
         assert "user" in data
 
+    def test_get_transaction_list_200_success(self):
+        account_id = self.account_info.account_id
+
+        res = urllib.request.urlopen(base_url + '/TEST_USER_X/accounts/' + account_id + '/transactions')
+        data = str(res.read())
+
+        assert "200" in data
+
     def test_close_account_200_success(self):
         account_id = self.account_info.account_id
 

@@ -5,13 +5,14 @@ from sqlalchemy.exc import OperationalError
 
 from server.utils import *
 from server.models.transaction import Transaction
-from server.data import base
+from server.models.user_account import UserAccount
+from server.data import DataBase
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
 from server.exceptions import *
 
 
-class TransactionData(base.Data):
+class TransactionData(DataBase):
     """
     Transaction data class for accssing database
     """
@@ -19,16 +20,23 @@ class TransactionData(base.Data):
         pass
 
 
-    def get_list(self, q=None, offset=0, fetch=20):
+    def get_list(self, account_id=None, q=None, offset=0, fetch=20):
         _rows = None
 
         try:
-            _rows = db.session.query(Transaction).all()
+            if account_id:
+                account_no = self._find_account_no(account_id)
+                _rows = db.session.query(Transaction).\
+                            filter(Transaction.account_no == account_no).one_or_none()
+            else:
+                _rows = db.session.query(Transaction).all()
 
         except OperationalError as ex:
             raise InternalServerError(ex)
 
-        rows = [row.to_dict() for row in _rows]
+        rows = None
+        if _rows:
+            rows = [row.to_dict() for row in _rows]
 
         return rows
 
@@ -72,3 +80,14 @@ class TransactionData(base.Data):
             raise
 
         return trx_id
+
+
+    def _find_account_no(self, account_id):
+        account_no = None
+
+        row = db.session.query(UserAccount.account_no).\
+                filter(UserAccount.account_id == account_id).one_or_none()
+        if row:
+            account_no = row.account_no
+
+        return account_no

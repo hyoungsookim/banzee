@@ -13,11 +13,11 @@ class TransactionController(object):
         pass
 
 
-    def get_list(self, q, offset=0, fetch=20):
+    def get_list(self, account_id, q, offset=0, fetch=20):
         trx_list = None
 
         try:
-            trx_list = self._trxData.get_list(q, offset, fetch)
+            trx_list = self._trxData.get_list(account_id, q, offset, fetch)
         except:
             raise
 

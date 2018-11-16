@@ -6,10 +6,12 @@ from server.models.user import User
 from server.models.user_account import UserAccount
 from server.data.user_data import UserData
 from server.data.user_account_data import UserAccountData
+from server.data.transaction_data import TransactionData
+from server.controller import ControllerBase
 from server.exceptions import *
 
 
-class UserController(object):
+class UserController(ControllerBase):
     _userData = UserData()
     _userAccountData = UserAccountData()
 
@@ -100,10 +102,17 @@ class UserController(object):
         return self._userAccountData.change_status(user_id, account_id, new_status)
 
 
-    '''
-    def deposit(self, account_no, amount):
-        pass
+    def get_transaction_list(self, account_id):
+        trx_list = None
+
+        try:
+            trx_list = TransactionData().get_list(
+                                            account_id, 
+                                            q=None, 
+                                            offset=0, 
+                                            fetch=20)
+        except:
+            raise
+
+        return trx_list
     
-    def withdraw(self, account_no, amount):
-        pass
-    '''

@@ -187,3 +187,20 @@ def change_account_status():
         response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
+
+
+@user_resource.route("/v1/users/<string:user_id>/accounts/<string:account_id>/transactions", methods=["GET"])
+def get_transaction_list(user_id, account_id):
+    q = request.args.get("q", None)
+    offset = request.args.get("offset", 0, type=int)
+    fetch = request.args.get("fetch", 20, type=int)
+
+    response_status = 200
+    trx_list = None
+    try:
+        trx_list = UserController().get_transaction_list(account_id)
+
+    except BanzeeException as ex:
+        response_status = ex.code
+    
+    return create_json_response(response_status, query_dict=None, body_key="transactions", body_dict=trx_list)
