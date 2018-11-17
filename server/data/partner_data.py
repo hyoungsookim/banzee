@@ -5,13 +5,13 @@ from sqlalchemy.exc import OperationalError
 
 from server.utils import *
 from server.models.partner import Partner
-from server.data import base
+from server.data import DataBase
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
 from server.exceptions import *
 
 
-class PartnerData(base.Data):
+class PartnerData(DataBase):
     """
     Partner data class for accssing database
     """

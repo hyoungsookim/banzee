@@ -5,12 +5,12 @@ from datetime import datetime
 
 from server.utils import *
 from server.models.orders import Order
-from server.data import base
+from server.data import DataBase
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
 
 
-class OrderData(base.Data):
+class OrderData(DataBase):
     """
     Order data class for accssing database
     """
