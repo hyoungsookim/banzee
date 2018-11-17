@@ -5,7 +5,9 @@ Error message dictionary
 """
 
 messages = {
+    102: "The transaction is pending."
     200: "The request was completed successfully.",
+    205: "The transaction is canceled."
     400: "Invalid request. Client might be missing some mandatory values or might call a wrong API.",
     401: "API authentication failed. Invalid request-header field or not acceptable client.",
     402: "Payment required.",
