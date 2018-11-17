@@ -68,3 +68,31 @@ def deposit_fund():
         response_status = ex.code
 
     return create_json_response(response_status, query_dict=None, body_key="transaction", body_dict=transaction_dict)
+
+
+@transaction_resource.route("/v1/transactions", methods=["DELETE"])
+def withdraw_fund():
+    response_status = 200
+    params = request.get_json()
+
+    transaction_dict = None
+    try:
+        account_id = params["account_id"]
+        withdrawal_amount = params["withdrawal_amount"]
+        source_transaction_id = params["source_transaction_id"]
+        reason = params.get("reason", None)
+
+        transaction_dict = TransactionController().withdraw_fund(
+                                                        account_id,
+                                                        withdrawal_amount,
+                                                        source_transaction_id,
+                                                        reason
+        )
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
+
+    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)

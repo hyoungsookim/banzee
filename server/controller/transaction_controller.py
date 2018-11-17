@@ -4,9 +4,10 @@
 from server.utils import *
 from server.models.transaction import Transaction
 from server.data.transaction_data import TransactionData
+from server.controller import ControllerBase
 
 
-class TransactionController(object):
+class TransactionController(ControllerBase):
     _trxData = TransactionData()
 
     def __init__(self):
@@ -47,10 +48,13 @@ class TransactionController(object):
                                 deposit_type, 
                                 deposit_amount, 
                                 reason)        
-        print(trx_id)
         return self.get(trx_id)
 
 
-    def withraw_fund(self, trx_id):
-        pass
+    def withdraw_fund(self, 
+                     account_id, 
+                     withdrawal_amount, 
+                     source_transaction_id, 
+                     reason):
+        self._trxData.withdraw_fund(account_id, withdrawal_amount, source_transaction_id, reason)
 

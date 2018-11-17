@@ -48,6 +48,42 @@ class TestTransaction(object):
         self.transacion_info.trx_id = json.loads(data).get('transaction').get('trx_id')
 
 
+    def test_withdraw_200(self):
+        data = '{ \
+                    "account_id": "c73bb94c-d82a-11e8-863b-024607912c40", \
+                    "withdrawal_amount": 1.03, \
+                    "source_transaction_id": "TEST_SOURCE_TRX_ID", \
+                    "reason": "test reason" \
+                }'.encode('utf8')
+
+        req = urllib.request.Request(base_url,
+                                     data=data,
+                                     headers=headers,
+                                     method='DELETE')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "200" in data
+
+
+    def test_withdraw_406(self):
+        data = '{ \
+                    "account_id": "c73bb94c-d82a-11e8-863b-024607912c40", \
+                    "withdrawal_amount": 1000.03, \
+                    "source_transaction_id": "TEST_SOURCE_TRX_ID", \
+                    "reason": "test reason" \
+                }'.encode('utf8')
+
+        req = urllib.request.Request(base_url,
+                                     data=data,
+                                     headers=headers,
+                                     method='DELETE')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
+
+        assert "406" in data
+
+
     def test_get_200(self):
         res = urllib.request.urlopen(base_url + '/' + self.transacion_info.trx_id)
         data = str(res.read())

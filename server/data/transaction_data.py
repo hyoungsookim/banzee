@@ -73,13 +73,32 @@ class TransactionData(DataBase):
                 raise BanzeeException(error_code)
 
             trx_id = res[0].decode()
-            #db.session.commit()
 
         except:
-            #db.session.rollback()
             raise
 
         return trx_id
+
+
+    def withdraw_fund(self, account_id, withdrawal_amount, source_transaction_id, reason=None):
+        params = { 
+            "account_id": account_id, 
+            "withdrawal_type": 2000,
+            "withdrawal_amount": withdrawal_amount,
+            "source_transaction_id": source_transaction_id, 
+            "reason": reason 
+        }
+
+        try:
+            db.session.execute("call mtp_tx_withdraw_fund(:account_id, :withdrawal_type, :withdrawal_amount, :source_transaction_id, :reason, @error_code)", params)
+            res = db.session.execute("select @error_code").fetchone()
+
+            error_code = int(res[0])
+            if (error_code != 0):
+                raise BanzeeException(error_code)
+
+        except:
+            raise
 
 
     def _find_account_no(self, account_id):
