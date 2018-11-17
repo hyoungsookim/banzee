@@ -1,10 +1,9 @@
 DELIMITER //
 /*
 	$trx_status: 200 - Succeeded.
-				   0 - Voided.
-				  -1 - Failed.
+				 412 - Failed.
 */
-create procedure mtp_tx_write_transaction
+create procedure mtp_tx_write_transaction_for_deposit
 (
     $account_no                 integer,
     $trx_type                   smallint,
@@ -19,14 +18,10 @@ main:begin
     declare $new_trx_id varchar(50) default null;
 	declare $created_at datetime default current_timestamp();
 
-	declare $data_not_found tinyint default false;
-	declare continue handler for 1329
-		set $data_not_found = true;
-
     set $error_code = 0;
 
     if $account_no is null then
-		set $error_code = 30400;			/* invalid request */
+		set $error_code = 400;			/* invalid request */
 		leave main;
     end if;
 
