@@ -4,6 +4,7 @@
 from flask import Blueprint, request
 
 from server.controller.user_controller import UserController
+from server.controller.cart_controller import CartController
 from server.models.user import User
 from server.exceptions import BanzeeException
 from server.api.response_resource import *
@@ -25,7 +26,10 @@ def get_user_list():
     except BanzeeException as ex:
         response_status = ex.code
     
-    return create_json_response(response_status, query_dict=None, body_key="users", body_dict=user_list)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="users", 
+                                body_dict=user_list)
 
 
 @user_resource.route("/v1/users/<string:user_id>", methods=["GET"])
@@ -38,7 +42,10 @@ def get_user(user_id):
     except BanzeeException as ex:
         response_status = ex.code
     
-    return create_json_response(response_status, query_dict=None, body_key="user", body_dict=user)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="user", 
+                                body_dict=user)
 
 
 @user_resource.route("/v1/users", methods=["POST"])
@@ -63,7 +70,10 @@ def create_user():
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key="user", body_dict=user_dict)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="user", 
+                                body_dict=user_dict)
 
 
 @user_resource.route("/v1/users/<string:user_id>", methods=["PUT"])
@@ -88,7 +98,10 @@ def update_user(user_id):
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key="user", body_dict=user_dict)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="user", 
+                                body_dict=user_dict)
 
 
 @user_resource.route("/v1/users/<string:user_id>", methods=["DELETE"])
@@ -101,7 +114,10 @@ def delete_user(user_id):
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key=None, 
+                                body_dict=None)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts", methods=["GET"])
@@ -118,7 +134,10 @@ def get_account_list(user_id):
     except BanzeeException as ex:
         response_status = ex.code
     
-    return create_json_response(response_status, query_dict=None, body_key="accounts", body_dict=account_list)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="accounts", 
+                                body_dict=account_list)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts/<string:account_id>", methods=["GET"])
@@ -131,7 +150,10 @@ def get_account(user_id, account_id):
     except BanzeeException as ex:
         response_status = ex.code
     
-    return create_json_response(response_status, query_dict=None, body_key="account", body_dict=account)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="account", 
+                                body_dict=account)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts", methods=["POST"])
@@ -149,7 +171,10 @@ def open_account(user_id):
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key="account", body_dict=account)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="account", 
+                                body_dict=account)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts/<string:account_id>", methods=["DELETE"])
@@ -166,7 +191,10 @@ def close_account(user_id, account_id):
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key=None, 
+                                body_dict=None)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts/<string:account_id>", methods=["PUT"])
@@ -186,7 +214,10 @@ def change_account_status():
     except BanzeeException as ex:
         response_status = ex.code
 
-    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key=None, 
+                                body_dict=None)
 
 
 @user_resource.route("/v1/users/<string:user_id>/accounts/<string:account_id>/transactions", methods=["GET"])
@@ -203,4 +234,88 @@ def get_transaction_list(user_id, account_id):
     except BanzeeException as ex:
         response_status = ex.code
     
-    return create_json_response(response_status, query_dict=None, body_key="transactions", body_dict=trx_list)
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="transactions", 
+                                body_dict=trx_list)
+
+
+@user_resource.route("/v1/users/<string:user_id>/cart", methods=["GET"])
+def get_product_list_in_cart(user_id):
+    response_status = 200
+    product_list = None
+    try:
+        product_list = CartController().get_list(user_id)
+
+    except BanzeeException as ex:
+        response_status = ex.code
+    
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="products", 
+                                body_dict=product_list)
+
+
+@user_resource.route("/v1/users/<string:user_id>/cart", methods=["POST"])
+def add_product_to_cart(user_id):
+    response_status = 200
+    params = request.get_json()
+
+    product_list = None
+    try:
+        product_list = CartController().add(user_id, 
+                                            params["product_id"])
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
+
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="products", 
+                                body_dict=product_list)
+
+
+@user_resource.route("/v1/users/<string:user_id>/cart/<string:product_id>", methods=["PUT"])
+def update_product_in_cart(user_id, product_id):
+    response_status = 200
+    params = request.get_json()
+
+    product_list = None
+    try:
+        product_list = CartController().update_quantity(user_id, 
+                                                        product_id, 
+                                                        params["product_quantity"])
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
+
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="products", 
+                                body_dict=product_list)
+
+
+@user_resource.route("/v1/users/<string:user_id>/cart/<string:product_id>", methods=["DELETE"])
+def delete_product_in_cart(user_id, product_id):
+    response_status = 200
+
+    product_list = None
+    try:
+        product_list = CartController().delete(user_id, product_id)
+
+    except KeyError as ex:
+        response_status = 400
+
+    except BanzeeException as ex:
+        response_status = ex.code
+
+    return create_json_response(response_status, 
+                                query_dict=None, 
+                                body_key="products", 
+                                body_dict=product_list)
