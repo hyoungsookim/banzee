@@ -991,17 +991,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account_Response'
 
-  /users/{user_id}/transactions:
+  /users/{user_id}/accounts/{account_id}/transactions:
     get:
       tags:
         - Users
-      summary: Get a list of transactions of a user
-      description: Get a list of transactions of a user
-      operationId: getListOfUserTransactions
+      summary: Get a list of transactions of a account
+      description: Get a list of transactions of a account
+      operationId: getListOfAccountTransactions
       parameters:
       - in: path
         name: user_id
         description: Code of user to return
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: account_id
+        description: Code of account to return
         required: true
         schema:
           type: string
@@ -1013,13 +1019,70 @@ paths:
               schema:
                 $ref: '#/components/schemas/Transaction_List_Response'
 
-  /users/{user_id}/transactions/{transaction_id}:
+
+  /users/{user_id}/cart:
     get:
       tags:
+        - Users
+      summary: Get a list of products in user's cart
+      description: Get a list of products in user's cart
+      operationId: getListOfProductsInCart
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_List_In_Cart_Response'
+        '400':
+          description: bad input parameter
+  
+    post:
+      tags:
       - Users
-      summary: Get a user transaction
-      description: Returns a user transaction detail information
-      operationId: getUserTransactionById
+      summary: Put a product into user's cart
+      description: Put a product into user's cart
+      operationId: putProductToCart
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: string
+                  example: f301a2ff-6c54-4b01-90e6-d701748f0851
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_List_In_Cart_Response'
+        '400':
+          description: bad input parameter
+      
+  /users/{user_id}/cart/{product_id}:
+    put:
+      tags:
+      - Users
+      summary: Update product quantity in cart
+      description: Update product quantity in cart
+      operationId: updateProductInCart
       parameters:
       - in: path
         name: user_id
@@ -1028,20 +1091,59 @@ paths:
         schema:
           type: string
       - in: path
-        name: transaction_id
-        description: Code of transaction to return
+        name: product_id
+        description: Code of product to update
         required: true
         schema:
           type: string
-          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_quantity:
+                  type: number
+                  example: 2
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Transaction_Response'
+                $ref: '#/components/schemas/Product_List_In_Cart_Response'
+        '400':
+          description: bad input parameter
 
+    delete:
+      tags:
+      - Users
+      summary: Delete product in cart
+      description: Delete product in cart
+      operationId: deleteProductInCart
+      parameters:
+      - in: path
+        name: user_id
+        description: Code of user to return
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: product_id
+        description: Code of product to update
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product_List_In_Cart_Response'
+        '400':
+          description: bad input parameter
+      
   /transactions:
     get:
       tags:
@@ -1141,11 +1243,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account_Response'
   
-  
+
   /orders:
     get:
       tags:
-        - Orders
+      - Orders
       summary: Get a list of orders
       operationId: getListOfOrders
       description: By passing in the appropriate options, you can search for
@@ -1625,7 +1727,7 @@ components:
       properties:
         response:
           $ref: '#/components/schemas/Response'
-        transaction_type:
+        transaction:
           $ref: '#/components/schemas/Transaction'
 
     Transaction_List_Response:
@@ -1640,7 +1742,7 @@ components:
           type: integer
           format: int32
           example: 20
-        transaction_types:
+        transactions:
           type: array
           items:
             $ref: '#/components/schemas/Transaction'
@@ -1763,6 +1865,59 @@ components:
             $ref: '#/components/schemas/Account'
     
 
+    Product_In_Cart:
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        product_name:
+          type: string
+          example: Medical Insuarance
+        product_type:
+          type: string
+          enum:
+          - service
+          - item
+          example: service
+        unit_price: 
+          type: number
+          format: float
+          readOnly: true
+          example: 11.50
+        product_quantity:
+          type: integer
+          format: int16
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2016-08-29 09:12:33'
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2016-08-29 09:12:33'
+    
+    Product_List_In_Cart_Response:
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        offset:
+          type: integer
+          format: int32
+          example: 1
+        fetch:
+          type: integer
+          format: int32
+          example: 20
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product_In_Cart'
+    
+    
     Order:
       properties:
         order_id:
