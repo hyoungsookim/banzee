@@ -39,13 +39,6 @@ class TestUser(object):
         assert "200" in data
         assert "users" in data
 
-    def test_get(self):
-        res = urllib.request.urlopen(base_url + '/TEST_USER_ID')
-        data = str(res.read())
-
-        assert "200" in data
-        assert "user" in data
-
     def test_create_200_success(self):
         data = '{ \
                     "user_id": "TEST_USER_X", \
@@ -63,6 +56,14 @@ class TestUser(object):
 
         assert "200" in data
         assert "user" in data
+
+    def test_get(self):
+        res = urllib.request.urlopen(base_url + '/TEST_USER_X')
+        data = str(res.read())
+
+        assert "200" in data
+        assert "user" in data
+
 
     def test_update_200_success(self):
         data = '{ \

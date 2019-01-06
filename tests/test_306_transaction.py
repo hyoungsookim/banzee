@@ -28,8 +28,8 @@ class TestTransaction(object):
 
     def test_deposit_200(self):
         data = '{ \
-                    "sender_id": "NEWUSERID001", \
-                    "recipient_account_id": "c73bb94c-d82a-11e8-863b-024607912c40", \
+                    "sender_id": "VINCLE_ADMIN", \
+                    "recipient_account_id": "11e9-11a6-b6c899f8-a44b-54ee75488a22", \
                     "deposit_type": 1200, \
                     "deposit_amount": 10.30, \
                     "reason": "test reason" \
@@ -50,7 +50,7 @@ class TestTransaction(object):
 
     def test_withdraw_200(self):
         data = '{ \
-                    "account_id": "c73bb94c-d82a-11e8-863b-024607912c40", \
+                    "account_id": "11e9-11a6-b6c899f8-a44b-54ee75488a22", \
                     "withdrawal_amount": 1.03, \
                     "source_transaction_id": "TEST_SOURCE_TRX_ID", \
                     "reason": "test reason" \
@@ -68,7 +68,7 @@ class TestTransaction(object):
 
     def test_withdraw_406(self):
         data = '{ \
-                    "account_id": "c73bb94c-d82a-11e8-863b-024607912c40", \
+                    "account_id": "11e9-11a6-b6c899f8-a44b-54ee75488a22", \
                     "withdrawal_amount": 1000.03, \
                     "source_transaction_id": "TEST_SOURCE_TRX_ID", \
                     "reason": "test reason" \
