@@ -87,7 +87,7 @@ class LocalConfig(ConfigBase):
 
     DATABASE_HOST = '127.0.0.1'
     DATABASE_NAME = 'db_microtransaction'
-    #DATABASE_USER = 'banzee'
+    DATABASE_USER = 'banzee'
     DATABASE_PASSWORD = 'banzee!$'
 
 
