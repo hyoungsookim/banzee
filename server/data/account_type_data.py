@@ -5,13 +5,13 @@ from sqlalchemy.exc import OperationalError
 
 from server.utils import *
 from server.models.account_type import AccountType
-from server.data import base
+from server.data import DataBase
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
 from server.exceptions import *
 
 
-class AccountTypeData(base.Data):
+class AccountTypeData(DataBase):
     """
     AccountType data class for accssing database
     """
