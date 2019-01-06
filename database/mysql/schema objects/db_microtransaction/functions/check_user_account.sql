@@ -1,5 +1,5 @@
 DELIMITER //
-create definer=`root`@`%` function `check_user_account`
+create function `check_user_account`
 (
     $user_no        int, 
     $account_type   smallint

@@ -1,5 +1,5 @@
 DELIMITER //
-create definer=`root`@`%` function `check_user`($user_id varchar(50))
+create function `check_user`($user_id varchar(50))
 returns int
     deterministic
     reads sql data
