@@ -58,7 +58,8 @@ class CartData(DataBase):
                         "from mtt_uw_users u " + \
                         "join mtt_md_products p " + \
                         "where u.user_id = :user_id " + \
-                        "and p.product_id = :product_id;")
+                        "and p.product_id = :product_id " + \
+                        "on duplicate key update product_quantity = product_quantity + 1;")
             
             sql_stmt = sql_stmt.bindparams(user_id=user_id, product_id=product_id)
 
