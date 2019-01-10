@@ -1,5 +1,10 @@
 /*
 	Orders
+
+	order_status: 	201 - created
+					200 - completed
+					0 - failed
+					-1 - canceled
 */
 create table mtt_tx_orders
 (
