@@ -5,6 +5,8 @@ from datetime import datetime
 
 from server.utils import *
 from server.models.orders import Order
+from server.models.order_product import OrderProduct
+from server.models.user import User
 from server.data import DataBase
 from server.data.helper import ConnectionHelper
 from server.db_factory import db
@@ -18,8 +20,14 @@ class OrderData(DataBase):
         pass
 
 
-    def get_list(self):
-        _rows = db.session.query(Order).all()
+    def get_list_by_user_id(self, user_id=None, q=None, offset=0, fetch=20):
+        if user_id is not None:
+            user_no = self._findUserNo(user_id)
+            _rows = db.session.query(Order).\
+                        filter(Order.user_no == user_no).all()
+        else:
+            _rows = db.session.query(Order).all()
+
         rows = [row.to_dict() for row in _rows]
         return rows
 
@@ -30,52 +38,79 @@ class OrderData(DataBase):
         return row.to_dict()
 
 
-    def create(self, order):
-        if not isinstance(order, Order):
-            raise TypeError("order should be an instance of Order class")
-
+    def create(self, user_id, platform_type=None, app_type=None):
+        params = { 
+            "user_id": user_id, 
+            "platform_type": platform_type,
+            "app_type": app_type 
+        }
+        
         try:
-            db.session.add(order)
+            db.session.execute("call mtp_tx_create_order(:user_id, :platform_type, :app_type, @order_no, @order_id, @error_code)", params)
+            res = db.session.execute("select @order_no, @order_id, @error_code").fetchone()
+            
+            error_code = int(res[2])
+            if (error_code != 0):
+                raise BanzeeException(error_code)
+
+            order_no = res[0]           # int object doesn't have decode method
+            order_id = res[1].decode()
+            
             db.session.commit()
+
         except:
             db.session.rollback()
-            return None
+            raise
 
-        return order
+        return order_id
 
 
-    def update(self, order):
-        if not isinstance(order, Order):
-            raise TypeError("order should be an instance of Order class")
-
+    def cancel(self, order_id):
         try:
             db.session.query(Order).\
-                filter(Order.order_id == order.order_id).\
+                filter(Order.order_id == order_id).\
                 update({
-                    "order_status": order.order_status,
-                    "updated_at": get_current_datetime_str(),
-                    "order_amount": order.order_amount,
-                    "tax_amount": order.tax_amount,
-                    "total_amount": order.total_amount,
-                    "platform_type": order.platform_type,
-                    "app_type": order.app_type
+                    "order_status": -1,
+                    "updated_at": get_current_datetime_str()
                 })
             db.session.commit()
         except:
             db.session.rollback()
-            return None
-
-        return order
+            raise
 
 
-    def delete(self, order_id):
+    def get_products(self, order_id):
         try:
-            db.session.query(Order).\
-                filter(Order.order_id == order_id).\
-                delete()
-            db.session.commit()
+            order_no = self._findOrderNo(order_id)
+            _rows = db.session.query(OrderProduct).\
+                        filter(OrderProduct.order_no == order_no).all()
+            rows = [row.to_dict() for row in _rows]
+            return rows
+
         except:
             db.session.rollback()
-            return False
+            raise
+
+
+    def _findOrderNo(self, order_id):
+        order_no = None
+
+        row = db.session.query(Order.order_no).\
+                filter(Order.order_id == order_id).one_or_none()
+
+        if not row:
+            raise ResourceNotFoundException
         
-        return True
+        return row.order_no
+
+
+    def _findUserNo(self, user_id):
+        user_no = None
+
+        row = db.session.query(User.user_no).\
+                filter(User.user_id == user_id).one_or_none()
+
+        if not row:
+            raise ResourceNotFoundException
+        
+        return row.user_no
