@@ -15,7 +15,7 @@ from server.db_factory import db
 class OrderPayment(db.Model):
     __tablename__ = "mtt_tx_order_payments"
 
-    paymet_no           = db.Column(INTEGER, primary_key=True, autoincrement=True)
+    payment_no          = db.Column(INTEGER, primary_key=True, autoincrement=True)
     order_no            = db.Column(INTEGER, nullable=False)
     method_code         = db.Column(String(10), nullable=False)
     payment_status      = db.Column(SMALLINT, nullable=False)

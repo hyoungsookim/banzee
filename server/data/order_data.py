@@ -6,6 +6,9 @@ from datetime import datetime
 from server.utils import *
 from server.models.orders import Order
 from server.models.order_product import OrderProduct
+from server.models.order_payment import OrderPayment
+from server.models.payment_method import PaymentMethod
+from server.models.product import Product
 from server.models.user import User
 from server.data import DataBase
 from server.data.helper import ConnectionHelper
@@ -27,7 +30,6 @@ class OrderData(DataBase):
                         filter(Order.user_no == user_no).all()
         else:
             _rows = db.session.query(Order).all()
-
         rows = [row.to_dict() for row in _rows]
         return rows
 
@@ -80,16 +82,35 @@ class OrderData(DataBase):
 
 
     def get_products(self, order_id):
+        _rows = None
         try:
             order_no = self._findOrderNo(order_id)
-            _rows = db.session.query(OrderProduct).\
+            _rows = db.session.\
+                        query(OrderProduct).\
+                        join(Product, Product.product_no == OrderProduct.product_no).\
                         filter(OrderProduct.order_no == order_no).all()
-            rows = [row.to_dict() for row in _rows]
-            return rows
 
-        except:
-            db.session.rollback()
-            raise
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
+        rows = [row.to_dict() for row in _rows]
+        return rows
+
+
+    def get_payments(self, order_id):
+        _rows = None
+        try:
+            order_no = self._findOrderNo(order_id)
+            _rows = db.session.\
+                        query(OrderPayment, PaymentMethod.method_name).\
+                        join(PaymentMethod, OrderPayment.method_code == PaymentMethod.method_code).\
+                        filter(OrderPayment.order_no == order_no).all()
+
+        except OperationalError as ex:
+            raise InternalServerError(ex)
+
+        rows = [row.to_dict() for row in _rows]
+        return rows
 
 
     def _findOrderNo(self, order_id):

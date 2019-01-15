@@ -29,6 +29,14 @@ class TestOrder(object):
         assert self.data.get(self.info.order_id) is not None
 
     
+    def test_get_products(self):
+        assert self.data.get_products(self.info.order_id) is not None
+
+    
+    def test_get_payments(self):
+        assert self.data.get_payments(self.info.order_id) is not None
+
+        
     """def test_cancel_200_success(self):
         assert self.data.cancel(self.info.order_id)
     """
