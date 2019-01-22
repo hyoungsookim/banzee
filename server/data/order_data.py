@@ -4,7 +4,7 @@
 from datetime import datetime
 
 from server.utils import *
-from server.models.orders import Order
+from server.models.order import Order
 from server.models.order_product import OrderProduct
 from server.models.order_payment import OrderPayment
 from server.models.payment_method import PaymentMethod
