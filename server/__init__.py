@@ -25,6 +25,7 @@ from server.api.v1.product_resource import product_resource
 from server.api.v1.account_type_resource import account_type_resource
 from server.api.v1.transaction_type_resource import transaction_type_resource
 from server.api.v1.transaction_resource import transaction_resource
+from server.api.v1.order_resource import order_resource
 from server.api.v1.user_resource import user_resource
 
 app.register_blueprint(system_resource)
@@ -34,6 +35,7 @@ app.register_blueprint(product_resource)
 app.register_blueprint(account_type_resource)
 app.register_blueprint(transaction_type_resource)
 app.register_blueprint(transaction_resource)
+app.register_blueprint(order_resource)
 app.register_blueprint(user_resource)
 
 #db = SQLAlchemy(app)
