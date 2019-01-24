@@ -1335,6 +1335,56 @@ paths:
               schema:
                 $ref: '#/components/schemas/Order_Response'
   
+  /orders/{order_id}/products:
+    get:
+      tags:
+      - Orders
+      summary: Get a list of products of a order
+      operationId: getProductListOfOrders
+      description: By passing in the appropriate options, you can search for
+        available products of a order
+      parameters:
+      - in: path
+        name: order_id
+        description: Id of order to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order_Product_List_Response'
+        '400':
+          description: bad input parameter
+    
+  /orders/{order_id}/payments:
+    get:
+      tags:
+      - Orders
+      summary: Get a list of payments of a order
+      operationId: getPaymentListOfOrders
+      description: By passing in the appropriate options, you can search for
+        available payments of a order
+      parameters:
+      - in: path
+        name: order_id
+        description: Id of order to return
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order_Payment_List_Response'
+        '400':
+          description: bad input parameter
+    
 
 components:
   schemas:
@@ -2032,7 +2082,16 @@ components:
           type: number
           format: float
           example: 10.50
-    
+
+    Order_Product_List_Response:    
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        order_products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order_Product'
+
     Order_Payment:
       properties:
         order_id:
@@ -2049,3 +2108,12 @@ components:
           type: string
           format: date-time
           example: '2016-08-29 09:12:33'
+          
+    Order_Payment_List_Response:    
+      properties:
+        response:
+          $ref: '#/components/schemas/Response'
+        order_payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order_Payment'
