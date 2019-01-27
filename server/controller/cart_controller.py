@@ -58,3 +58,9 @@ class CartController(object):
 
         return product_dict 
 
+
+    def clear(self, order_id):
+        try:
+            self._cartData.delete(order_id)
+        except:
+            raise

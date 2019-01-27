@@ -135,6 +135,28 @@ class CartData(DataBase):
         return return_value
 
 
+    def clear(self, user_id):
+        """
+        Delete all product in cart of a user
+        """
+        return_value = False
+
+        try:
+            user_no = self._findUserNo(user_id)
+
+            db.session.query(Cart).\
+                filter(Cart.product_no == product_no).\
+                delete()
+
+            db.session.commit()
+            return_value = True
+
+        except:
+            db.session.rollback()
+
+        return return_value
+
+
     def _findUserNo(self, user_id):
         user_no = None
 
