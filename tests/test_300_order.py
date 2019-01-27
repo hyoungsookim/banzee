@@ -57,14 +57,23 @@ class TestOrder(object):
         assert "order" in data
 
     
-    #def test_get_products(self):
-    #    assert self.data.get_products(self.info.order_id) is not None
+    def test_create_payment_200_success(self):
+        data = '{ \
+                    "method_code": "VINCLE", \
+                    "payment_currency": "USD", \
+                    "payment_amount": 43.30 \
+                }'.encode('utf8')
 
-    
-    #def test_get_payments(self):
-    #    assert self.data.get_payments(self.info.order_id) is not None
+        req = urllib.request.Request(base_url + '/' + self.info.order_id + '/payments',
+                                     data=data,
+                                     headers=headers,
+                                     method='POST')
+        res = urllib.request.urlopen(req)
+        data = res.read().decode('utf8')
 
-        
+        assert "200" in data
+
+
     """def test_cancel_200_success(self):
         assert self.data.cancel(self.info.order_id)
     """

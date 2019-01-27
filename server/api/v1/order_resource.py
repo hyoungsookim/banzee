@@ -39,6 +39,8 @@ def get_order(order_id):
     order = None
     try:
         order = OrderController().get(order_id)
+        # bind order products
+        # bind order payments
 
     except BanzeeException as ex:
         response_status = ex.code
@@ -73,6 +75,27 @@ def cancel_order(order_id):
 
     try:
         res = OrderController().cancel(order_id)
+
+    except BanzeeException as ex:
+        response_status = ex.code
+
+    return create_json_response(response_status, query_dict=None, body_key=None, body_dict=None)
+
+
+@order_resource.route("/v1/orders/<string:order_id>/payments", methods=["POST"])
+def create_order_payment(order_id):
+    response_status = 200
+
+    params = request.get_json()
+    try:
+        OrderController().create_payment(
+            order_id, 
+            params["method_code"], 
+            params["payment_currency"], 
+            params["payment_amount"])
+
+    except KeyError as ex:
+        response_status = 400
 
     except BanzeeException as ex:
         response_status = ex.code

@@ -67,14 +67,21 @@ class OrderData(DataBase):
         return order_id
 
 
-    def cancel(self, order_id):
+    def change_status(self, order_id, order_status):
         try:
             db.session.query(Order).\
                 filter(Order.order_id == order_id).\
                 update({
-                    "order_status": -1,
+                    "order_status": order_status,
                     "updated_at": get_current_datetime_str()
-                })
+                })            
+        except:
+            raise
+    
+
+    def cancel(self, order_id):
+        try:
+            self.change_status(order_id, -1)
             db.session.commit()
         except:
             db.session.rollback()
@@ -102,8 +109,7 @@ class OrderData(DataBase):
         try:
             order_no = self._findOrderNo(order_id)
             _rows = db.session.\
-                        query(OrderPayment, PaymentMethod.method_name).\
-                        join(PaymentMethod, OrderPayment.method_code == PaymentMethod.method_code).\
+                        query(OrderPayment).\
                         filter(OrderPayment.order_no == order_no).all()
 
         except OperationalError as ex:
@@ -111,6 +117,34 @@ class OrderData(DataBase):
 
         rows = [row.to_dict() for row in _rows]
         return rows
+
+
+    def create_payment(self, order_id, method_code, payment_currency, payment_amount):
+        params = { 
+            "order_id": order_id,
+            "method_code": method_code, 
+            #"payment_status": payment_status, 
+            "payment_currency": payment_currency,
+            "payment_amount": payment_amount
+        }
+
+        try:
+            db.session.execute("call mtp_tx_create_order_payment(:order_id, :method_code, :payment_currency, :payment_amount, @payment_no, @error_code)", params)
+            res = db.session.execute("select @payment_no, @error_code").fetchone()
+
+            error_code = int(res[1])
+            if (error_code != 0):
+                raise BanzeeException(error_code)
+
+            payment_no = int(res[0])
+
+            db.session.commit()
+
+        except:
+            db.session.rollback()
+            raise
+
+        return payment_no
 
 
     def _findOrderNo(self, order_id):
