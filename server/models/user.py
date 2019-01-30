@@ -26,7 +26,8 @@ class User(db.Model):
     created_at      = db.Column(DateTime, nullable=False)
     updated_at      = db.Column(DateTime, nullable=False)
 
-    def __init__(self, user_id, partner_id, user_status, user_type, user_level, first_name, last_name):
+    def __init__(self, user_id, partner_id, user_status, user_type, 
+                       user_level, first_name, last_name):
         self.user_id = user_id
         self.partner_id = partner_id
         self.user_status = user_status

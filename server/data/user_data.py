@@ -15,6 +15,17 @@ class UserData(DataBase):
     """
     User data class for accssing database
     """
+
+    _displayList = ["user_id", 
+                    "partner_id", 
+                    "user_status", 
+                    "user_type", 
+                    "user_level", 
+                    "first_name", 
+                    "last_name", 
+                    "created_at", 
+                    "updated_at"]
+
     def __init__(self):
         pass
 
@@ -24,8 +35,8 @@ class UserData(DataBase):
 
         except OperationalError as ex:
             raise InternalServerError(ex)
-
-        rows = [row.to_dict() for row in _rows]
+        
+        rows = [row.to_dict(self._displayList) for row in _rows]
 
         return rows
 
@@ -41,7 +52,7 @@ class UserData(DataBase):
         except OperationalError as ex:
             raise InternalServerError(ex)
 
-        return row.to_dict()
+        return row.to_dict(self._displayList)
 
 
     def create(self, user):

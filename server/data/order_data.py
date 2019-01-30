@@ -19,6 +19,27 @@ class OrderData(DataBase):
     """
     Order data class for accssing database
     """
+
+    _displayAttrForList = [
+        "order_id", 
+        "order_status", 
+        "created_at", 
+        "updated_at", 
+        "order_amount",
+        "tax_amount",
+        "total_amount"
+    ]
+
+    _displayAttrForSingleRow = [
+        "order_id", 
+        "order_status", 
+        "created_at", 
+        "updated_at", 
+        "order_amount",
+        "tax_amount",
+        "total_amount"
+    ]
+
     def __init__(self):
         pass
 
@@ -30,14 +51,16 @@ class OrderData(DataBase):
                         filter(Order.user_no == user_no).all()
         else:
             _rows = db.session.query(Order).all()
-        rows = [row.to_dict() for row in _rows]
+
+        rows = [row.to_dict(self._displayAttrForList) for row in _rows]
+
         return rows
 
 
     def get(self, order_id):
         row = db.session.query(Order).\
                 filter(Order.order_id == order_id).one_or_none()
-        return row.to_dict()
+        return row.to_dict(self._displayAttrForSingleRow)
 
 
     def create(self, user_id, platform_type=None, app_type=None):

@@ -26,9 +26,9 @@ class CartData(DataBase):
     def get_list(self, user_id):
         _rows = None
         try:
-            # account_type 840 is Cash, 0 is reward
+            # account_type 840 is Cash(USD), 0 is reward
             _rows = db.session.\
-                        query(Cart, Product.product_id, Product.product_name, ProductPrice.unit_price).\
+                        query(Cart.product_quantity, Product.product_id, Product.product_name, ProductPrice.unit_price).\
                         join(User, Cart.user_no == User.user_no).\
                         join(Product, Product.product_no == Cart.product_no).\
                         join(ProductPrice, ProductPrice.product_no == Product.product_no).\
