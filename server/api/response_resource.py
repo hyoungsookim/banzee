@@ -67,8 +67,11 @@ def create_json_response(response_status,
                          body_dict=None):
     res_dict = dict()
     res_dict["response"] = get_response_info(response_status)
+    
     if query_dict:
         res_dict.update(offset=query_dict["offset"], fetch=query_dict["fetch"])
-    res_dict[body_key] = body_dict
+    
+    if body_dict:
+        res_dict[body_key] = body_dict
 
     return convert_dict_to_response(res_dict)
